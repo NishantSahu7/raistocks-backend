@@ -4,6 +4,7 @@ import {
   getLeads,
   updateLead,
   deleteLead,
+  getLeadById
 } from "../controllers/leadController.js";
 import { protect } from "../middleware/authMiddleware.js"; // Optional if you want auth
 
@@ -17,6 +18,7 @@ router.route("/")
   .get(protect, getLeads);     // Get all leads
 
 router.route("/:id")
+  .get(protect, getLeadById)   // ✅ Get single lead by ID
   .put(protect, updateLead)    // Update lead
   .delete(protect, deleteLead); // Delete lead
 

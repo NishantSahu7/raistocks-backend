@@ -63,6 +63,27 @@ export const updateLead = async (req, res) => {
   }
 };
 
+// ✅ Get single lead by ID
+export const getLeadById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const lead = await Lead.findById(id);
+
+    if (!lead) {
+      return res.status(404).json({ success: false, message: "Lead not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: lead,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 // ✅ Delete lead (if needed)
 export const deleteLead = async (req, res) => {
   try {

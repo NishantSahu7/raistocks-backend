@@ -19,17 +19,17 @@ const leadSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ["Website", "Referral", "Ad"],
       required: [true, "Source is required"],
     },
     status: {
       type: String,
-      enum: ["Contacted", "Converted", "Qualified", "New Lead"],
       default: "New Lead",
     },
   },
   { timestamps: true } // automatically adds createdAt & updatedAt
 );
+
+
 
 const Lead = mongoose.model("Lead", leadSchema);
 
