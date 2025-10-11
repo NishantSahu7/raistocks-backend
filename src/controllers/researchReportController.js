@@ -50,20 +50,20 @@ export const getAllReports = async (req, res) => {
   }
 };
 
-// 📥 Download a specific report file
+ // 📥 Download a specific report file
 export const downloadReport = async (req, res) => {
   try {
     const report = await ResearchReport.findById(req.params.id);
     if (!report) return res.status(404).json({ message: "Report not found" });
 
+    const fileBuffer = report.file?.buffer || report.file;
+
     res.set({
       "Content-Type": report.fileType || "application/octet-stream",
-      // use the original uploaded filename for download
-      "Content-Disposition": `attachment; filename="${
-        report.fileName || report.title
-      }"`,
+      "Content-Disposition": `attachment; filename="${report.fileName || "file"}"`,
     });
-    res.send(report.file);
+
+    res.send(fileBuffer);
   } catch (error) {
     res
       .status(500)
