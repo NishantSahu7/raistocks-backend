@@ -17,7 +17,15 @@ connectDB();
 const app = express();
 
 // ✅ Enable CORS (allow requests from frontend)
-app.use(cors());
+ 
+app.use(
+  cors({
+    origin: ["https://unique-youtiao-11d4e5.netlify.app/admin/dashboard"], // 👈 your live frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 
 // ✅ Parse JSON bodies
 app.use(express.json());
