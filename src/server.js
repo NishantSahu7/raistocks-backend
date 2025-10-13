@@ -10,6 +10,8 @@ import crmRoutes from "./routes/crmRoutes.js";
 import connectDB from "./config/db.js";
 import marketInsightRoutes from "./routes/marketInsightRoutes.js";
  import researchReportRoutes from "./routes/researchReportRoutes.js"; 
+ import globalMarketRoutes from "./routes/globalMarketRoutes.js";
+ import vixRoutes from "./routes/vixRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -31,6 +33,8 @@ app.use("/api/admin/leads", leadRoutes);
 app.use("/api/crm", crmRoutes);
 app.use("/api/market-insights", marketInsightRoutes);
 app.use("/api/research-reports", researchReportRoutes);
+app.use("/api/globalmarket", globalMarketRoutes);
+app.use("/api/vix", vixRoutes);
 
  
 
