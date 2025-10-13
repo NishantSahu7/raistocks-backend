@@ -20,7 +20,7 @@ const app = express();
 
 // ✅ Enable CORS (allow requests from frontend)
 const corsOptions = {
-  origin: 'https://lively-melomakarona-f1818b.netlify.app/', // Replace with your frontend URL
+  origin: 'https://unique-youtiao-11d4e5.netlify.app/', // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // Allow sending cookies/authorization headers
