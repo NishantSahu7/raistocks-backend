@@ -19,7 +19,15 @@ connectDB();
 const app = express();
 
 // ✅ Enable CORS (allow requests from frontend)
-app.use(cors());
+const corsOptions = {
+  origin: 'https://lively-melomakarona-f1818b.netlify.app/', // Replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow sending cookies/authorization headers
+};
+
+app.use(cors(corsOptions));
+
 
 // ✅ Parse JSON bodies
 app.use(express.json());
