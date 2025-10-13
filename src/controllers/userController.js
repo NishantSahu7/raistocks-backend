@@ -16,12 +16,11 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Restrict who can create admins
+    // Default role logic
     let finalRole = "user";
     let finalSubRole = null;
 
     if (req.user && req.user.role === "admin") {
-      // If an admin is creating the account
       finalRole = role || "user";
       finalSubRole = role === "admin" ? subRole || null : null;
     }
@@ -30,6 +29,7 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const user = await User.create({
       name,
       email,
@@ -38,6 +38,7 @@ export const registerUser = async (req, res) => {
       subRole: finalSubRole,
     });
 
+    // Create JWT token (auto-login)
     const token = jwt.sign(
       {
         id: user._id,
@@ -48,8 +49,9 @@ export const registerUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // ✅ Send token and user info — acts like auto-login
     res.status(201).json({
-      message: "User registered successfully",
+      message: "User registered and logged in successfully",
       user: {
         id: user._id,
         name: user.name,
@@ -129,6 +131,46 @@ export const getUsers = async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error("Get Users Error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ==================== UPDATE PASSWORD FOR AUTHENTICATED USER ====================
+export const updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res
+        .status(400)
+        .json({ message: "All password fields are required" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "New passwords do not match" });
+    }
+
+    // req.user is set by auth middleware (protect)
+    const userId = req.user && req.user.id ? req.user.id : req.user?._id;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Hash and save new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Update Password Error:", error.message);
     res.status(500).json({ message: "Server error" });
   }
 };

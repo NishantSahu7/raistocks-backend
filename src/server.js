@@ -17,15 +17,7 @@ connectDB();
 const app = express();
 
 // ✅ Enable CORS (allow requests from frontend)
- 
-app.use(
-  cors({
-    origin: ["https://unique-youtiao-11d4e5.netlify.app/admin/dashboard"], // 👈 your live frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
+app.use(cors());
 
 // ✅ Parse JSON bodies
 app.use(express.json());
@@ -36,7 +28,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/users/market-trend", marketTrendRoutes);
 app.use("/api/users/market-phase", marketPhaseRoutes);
 app.use("/api/admin/leads", leadRoutes);
-app.use("/api/admin/user-management", crmRoutes);
+app.use("/api/crm", crmRoutes);
 app.use("/api/market-insights", marketInsightRoutes);
 app.use("/api/research-reports", researchReportRoutes);
 

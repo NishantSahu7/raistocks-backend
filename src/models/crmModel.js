@@ -19,11 +19,9 @@ const crmSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
-    confirmPassword: {
-      type: String,
-      required: [true, "Confirm Password is required"],
-    },
-    status:{
+    // confirmPassword is intentionally NOT stored in the database.
+    // It's only used for controller-side validation during registration.
+    status: {
       type: String,
       enum: ["Active", "Suspended"],
       default: "Active",
