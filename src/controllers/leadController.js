@@ -41,11 +41,18 @@ export const getLeads = async (req, res) => {
 export const updateLead = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, contact, source, status , email } = req.body;
+
+    // ✅ Filter out undefined fields
+    const updates = {};
+    for (const key in req.body) {
+      if (req.body[key] !== undefined) {
+        updates[key] = req.body[key];
+      }
+    }
 
     const updatedLead = await Lead.findByIdAndUpdate(
       id,
-      { name, contact, source, status , email},
+      { $set: updates },
       { new: true, runValidators: true }
     );
 
@@ -62,6 +69,7 @@ export const updateLead = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // ✅ Get single lead by ID
 export const getLeadById = async (req, res) => {

@@ -19,7 +19,7 @@ router.route("/")
 
 router.route("/:id")
   .get(protect, getLeadById)   // ✅ Get single lead by ID
-  .put(protect, updateLead)    // Update lead
+  .patch(protect, updateLead)    // Update lead
   .delete(protect, deleteLead); // Delete lead
 
 export default router;
