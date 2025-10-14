@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const tradeSchema = new mongoose.Schema(
   {
-    segment: { type: String, required: true }, // e.g. Cash, F&O, etc.
-    tradeType: { type: String, required: true }, // e.g. Swing, Intraday
-    action: { type: String, enum: ["Buy", "Sell"], required: true },
-    on: { type: String, required: true }, // e.g. Reliance, Banknifty
-    entryPrice: { type: Number, required: true },
-    stoploss: { type: String, default: "NA" },
+    segment: { type: String }, // e.g. Cash, F&O, etc.
+    tradeType: { type: String }, // e.g. Swing, Intraday
+    action: { type: String, },
+    on: { type: String }, // e.g. Reliance, Banknifty
+    entryPrice: { type: Number },
+    stoploss: { type: String,},
     target1: { type: Number },
     target2: { type: Number },
     target3: { type: Number },
@@ -19,7 +19,6 @@ const tradeSchema = new mongoose.Schema(
     recommendationDateTime: { type: Date },
     status: {
       type: String,
-      enum: ["Active", "Closed", "Pending"],
       default: "Pending",
     },
   },

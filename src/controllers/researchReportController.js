@@ -50,26 +50,37 @@ export const getAllReports = async (req, res) => {
   }
 };
 
- // 📥 Download a specific report file
+// 📥 Download a specific report file
 export const downloadReport = async (req, res) => {
   try {
     const report = await ResearchReport.findById(req.params.id);
-    if (!report) return res.status(404).json({ message: "Report not found" });
 
-    const fileBuffer = report.file?.buffer || report.file;
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
 
-    res.set({
-      "Content-Type": report.fileType || "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${report.fileName || "file"}"`,
-    });
+    // Ensure the file exists
+    if (!report.file) {
+      return res.status(400).json({ message: "File data missing" });
+    }
 
-    res.send(fileBuffer);
+    // Set headers correctly so browser treats it as binary file
+    res.setHeader("Content-Type", report.fileType);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${encodeURIComponent(report.fileName)}"`
+    );
+
+    // ✅ Send binary data directly without JSON/string conversion
+    res.end(Buffer.from(report.file, "base64"));
   } catch (error) {
+    console.error("Download error:", error);
     res
       .status(500)
       .json({ message: "Failed to download report", error: error.message });
   }
 };
+
 
 // 🗑️ Delete a report
 export const deleteReport = async (req, res) => {
