@@ -12,6 +12,7 @@ import marketInsightRoutes from "./routes/marketInsightRoutes.js";
  import researchReportRoutes from "./routes/researchReportRoutes.js"; 
  import globalMarketRoutes from "./routes/globalMarketRoutes.js";
  import vixRoutes from "./routes/vixRoutes.js"
+ import tradeRoutes from "./routes/tradeRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -51,6 +52,7 @@ app.use("/api/market-insights", marketInsightRoutes);
 app.use("/api/research-reports", researchReportRoutes);
 app.use("/api/globalmarket", globalMarketRoutes);
 app.use("/api/vix", vixRoutes);
+app.use("/api/trades", tradeRoutes);
 
  
 
