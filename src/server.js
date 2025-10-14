@@ -21,7 +21,7 @@ const app = express();
 // ✅ Enable CORS (allow requests from frontend)
 const corsOptions = {
   origin: 'https://unique-youtiao-11d4e5.netlify.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
    credentials: true, // Allow sending cookies/authorization headers
 };
 
