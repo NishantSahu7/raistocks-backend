@@ -1,4 +1,5 @@
-import GlobalMarket from "../models/globalmarketModel";
+import GlobalMarket from "../models/globalMarketModel.js";
+
 
  
 
