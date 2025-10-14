@@ -19,14 +19,23 @@ connectDB();
 const app = express();
 
 // ✅ Enable CORS (allow requests from frontend)
+const whitelist = [
+  "https://unique-youtiao-11d4e5.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
+
 const corsOptions = {
-  origin: 'https://unique-youtiao-11d4e5.netlify.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-   credentials: true, // Allow sending cookies/authorization headers
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow server-to-server / Postman
+    if (whitelist.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-
 
 // ✅ Parse JSON bodies
 app.use(express.json());
