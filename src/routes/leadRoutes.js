@@ -14,12 +14,12 @@ const router = express.Router();
 // for admin routes are protected for now.. 
 // let me know which are needed to be protected
 router.route("/")
-  .post(protect, createLead)   // Add new lead
-  .get(protect, getLeads);     // Get all leads
+  .post(createLead)   // Add new lead
+  .get(getLeads);     // Get all leads
 
 router.route("/:id")
-  .get(protect, getLeadById)   // ✅ Get single lead by ID
-  .patch(protect, updateLead)    // Update lead
-  .delete(protect, deleteLead); // Delete lead
+  .get(getLeadById)   // ✅ Get single lead by ID
+  .patch(updateLead)    // Update lead
+  .delete(deleteLead); // Delete lead
 
 export default router;
