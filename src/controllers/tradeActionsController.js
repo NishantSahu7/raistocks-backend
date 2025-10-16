@@ -1,10 +1,11 @@
-// controllers/tradeAction.controller.ts
 import Trade from "../models/tradeModel.js";
 import TradeAction from "../models/tradeActionsModel.js";
 
+// ✅ Add a new action for a trade
 export const addTradeAction = async (req, res) => {
   try {
-    const { tradeId, type, title, price, comment } = req.body;
+    const { tradeId } = req.params; // ✅ Take from params, not body
+    const { type, title, price, comment } = req.body;
 
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
@@ -20,13 +21,17 @@ export const addTradeAction = async (req, res) => {
       comment,
     });
 
-    res.status(201).json({ message: "Action added successfully", action });
+    res.status(201).json({
+      message: "Action added successfully",
+      action,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error adding action", error });
   }
 };
 
+// ✅ Get all actions for a specific trade
 export const getTradeActions = async (req, res) => {
   try {
     const { tradeId } = req.params;
