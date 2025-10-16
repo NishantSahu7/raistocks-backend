@@ -7,7 +7,7 @@ import {
 const router = express.Router();
 
 // ✅ Matches frontend: /api/trades/:tradeId/actions
-router.post("/:tradeId/actions", addTradeAction);
-router.get("/:tradeId/actions", getTradeActions);
+router.post("/:tradeId", addTradeAction);
+router.get("/:tradeId", getTradeActions);
 
 export default router;
