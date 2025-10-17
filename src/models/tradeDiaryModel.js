@@ -9,39 +9,31 @@ const tradeDiarySchema = new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: [true, "Please provide a date for the trade."],
-    },
+     },
     tradeTitle: {
       type: String,
-      required: [true, "Please provide a title for the trade."],
-      trim: true,
+       trim: true,
     },
     action: {
       type: String,
-      required: [true, "Please specify the action (e.g., Buy, Sell)."],
-    },
+     },
     entry: {
       type: Number,
-      required: [true, "Please provide the entry price."],
-    },
+     },
     yourEntry: {
       type: Number,
-      required: [true, "Please provide your entry price."],
-    },
+     },
     exit: {
       type: Number,
-      required: [true, "Please provide the exit price."],
-    },
+     },
     yourExit: {
       type: Number,
-      required: [true, "Please provide your exit price."],
-    },
+     },
     qty: {
       type: Number,
-      required: [true, "Please provide the quantity."],
-    },
-    pnl: { type: Number, required: [true, "Please provide the P&L."] },
-    result: { type: String, required: [true, "Please provide the result."] },
+     },
+    pnl: { type: Number,  },
+    result: { type: String,  },
   },
   { timestamps: true }
 );
