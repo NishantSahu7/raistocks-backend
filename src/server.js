@@ -1,5 +1,5 @@
+import "dotenv/config"; // ✅ Load environment variables at the very top
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors"; // ✅ import CORS
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -9,14 +9,15 @@ import leadRoutes from "./routes/leadRoutes.js";
 import crmRoutes from "./routes/crmRoutes.js";
 import connectDB from "./config/db.js";
 import marketInsightRoutes from "./routes/marketInsightRoutes.js";
- import researchReportRoutes from "./routes/researchReportRoutes.js"; 
- import globalMarketRoutes from "./routes/globalMarketRoutes.js";
- import vixRoutes from "./routes/vixRoutes.js"
- import tradeRoutes from "./routes/tradeRoutes.js"
- import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
+import researchReportRoutes from "./routes/researchReportRoutes.js";
+import globalMarketRoutes from "./routes/globalMarketRoutes.js";
+import vixRoutes from "./routes/vixRoutes.js";
+import tradeRoutes from "./routes/tradeRoutes.js";
+import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
+import bodyParser from "body-parser";
 
-
-dotenv.config();
 connectDB();
 
 const app = express();
@@ -37,13 +38,14 @@ const corsOptions = {
     return callback(new Error("Not allowed by CORS"));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  credentials: true
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
 
 // ✅ Parse JSON bodies
 app.use(express.json());
+app.use(bodyParser.json());
 
 // ✅ Your routes
 app.use("/api/users", userRoutes);
@@ -59,9 +61,9 @@ app.use("/api/vix", vixRoutes);
 app.use("/api/trades", tradeRoutes);
 app.use("/api/trade-actions", tradeActionsRoutes);
 
-
- 
-
+// ✅ Use payment routes
+app.use("/api/payment", paymentRoutes);
+app.use("/api/trade-diary", tradeDiaryRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
