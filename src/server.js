@@ -14,9 +14,8 @@ import globalMarketRoutes from "./routes/globalMarketRoutes.js";
 import vixRoutes from "./routes/vixRoutes.js";
 import tradeRoutes from "./routes/tradeRoutes.js";
 import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
+import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
-import bodyParser from "body-parser";
 
 connectDB();
 
@@ -43,9 +42,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// ✅ Parse JSON bodies
+// ✅ Parse JSON bodies (should be before your routes)
 app.use(express.json());
-app.use(bodyParser.json());
 
 // ✅ Your routes
 app.use("/api/users", userRoutes);
@@ -61,8 +59,7 @@ app.use("/api/vix", vixRoutes);
 app.use("/api/trades", tradeRoutes);
 app.use("/api/trade-actions", tradeActionsRoutes);
 
-// ✅ Use payment routes
-app.use("/api/payment", paymentRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
 
 const PORT = process.env.PORT || 5000;
