@@ -16,11 +16,16 @@ import tradeRoutes from "./routes/tradeRoutes.js";
 import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
+import supportRoutes from "./routes/supportRoutes.js";
+import cookieParser from "cookie-parser";
 
 connectDB();
 
+
 const app = express();
 
+
+app.use(cookieParser());
 // ✅ Enable CORS (allow requests from frontend)
 const whitelist = [
   "https://unique-youtiao-11d4e5.netlify.app",
@@ -28,6 +33,8 @@ const whitelist = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:5174",
+  "http://localhost:5175"
+
 ];
 
 const corsOptions = {
@@ -61,6 +68,8 @@ app.use("/api/trade-actions", tradeActionsRoutes);
 
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
+app.use("/api/support", supportRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

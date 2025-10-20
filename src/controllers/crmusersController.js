@@ -35,10 +35,17 @@ export const createCRM = async (req, res) => {
 
     const token = generateToken(crmUser._id);
 
+    // ✅ Set token in HTTP-only cookie
+    res.cookie("crm_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Only HTTPS in production
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(201).json({
       success: true,
       message: "CRM user registered successfully",
-      token,
       data: {
         id: crmUser._id,
         name: crmUser.name,
@@ -75,10 +82,17 @@ export const loginCRM = async (req, res) => {
 
     const token = generateToken(user._id);
 
+    // ✅ Set token in HTTP-only cookie
+    res.cookie("crm_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(200).json({
       success: true,
       message: "Login successful",
-      token,
       data: {
         id: user._id,
         name: user.name,
@@ -87,6 +101,22 @@ export const loginCRM = async (req, res) => {
         status: user.status,
       },
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/* ======================================================
+   ✅ Logout CRM User
+====================================================== */
+export const logoutCRM = async (req, res) => {
+  try {
+    res.clearCookie("crm_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+    res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
