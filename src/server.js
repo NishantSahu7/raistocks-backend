@@ -32,6 +32,8 @@ app.use(cookieParser());
 const whitelist = [
   "https://unique-youtiao-11d4e5.netlify.app",
   "https://classy-begonia-022eef.netlify.app",
+  "https://fantastic-kelpie-7dc39f.netlify.app",
+  "https://sensational-maamoul-174c61.netlify.app",
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:5174",
