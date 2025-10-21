@@ -75,7 +75,7 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api/clients", clientRoutes);
-app.use("/api/client/auth", clientAuthRoutes); 
+app.use("/client/auth", clientAuthRoutes); 
 
 
 
