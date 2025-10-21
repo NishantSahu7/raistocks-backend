@@ -34,6 +34,7 @@ const whitelist = [
   "https://classy-begonia-022eef.netlify.app",
   "https://fantastic-kelpie-7dc39f.netlify.app",
   "https://sensational-maamoul-174c61.netlify.app",
+   "https://chipper-rugelach-27e08f.netlify.app/ourPlan",
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:5174",
