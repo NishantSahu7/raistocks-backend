@@ -17,6 +17,8 @@ import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
 import supportRoutes from "./routes/supportRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
+import clientAuthRoutes from "./routes/clientAuthRoutes.js";
 import cookieParser from "cookie-parser";
 
 connectDB();
@@ -69,6 +71,10 @@ app.use("/api/trade-actions", tradeActionsRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
 app.use("/api/support", supportRoutes);
+app.use("/api/clients", clientRoutes);
+app.use("/api/client/auth", clientAuthRoutes);
+
+
 
 
 const PORT = process.env.PORT || 5000;
