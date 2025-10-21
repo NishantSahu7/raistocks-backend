@@ -9,7 +9,7 @@ const supportModelSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "CRM",
+      ref: "Client",
       required: true,
     },
     client: {
