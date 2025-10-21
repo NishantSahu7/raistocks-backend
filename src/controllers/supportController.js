@@ -1,9 +1,9 @@
 // controllers/supportController.js
 import Support from "../models/supportModel.js";
-import CRM from "../models/crmModel.js";
+import Client from "../models/clientModel.js"; // ✅ use Client model
 
-// ✅ Utility: Generate Ticket ID like mock data (e.g., 101, 102, etc.)
-let ticketCounter = 100; // You can persist this if needed
+// Utility: Generate Ticket ID like mock data (101, 102, ...)
+let ticketCounter = 100;
 
 const generateTicketId = async () => {
   const lastTicket = await Support.findOne().sort({ createdAt: -1 });
@@ -20,23 +20,23 @@ export const createTicket = async (req, res) => {
   try {
     const { client, subject, category, opened, status, userId } = req.body;
 
-    // Find user email from CRM collection
-    const crmUser = await CRM.findById(userId);
-    if (!crmUser) {
-      return res.status(404).json({ message: "User not found in CRM" });
+    // Find user email from Client collection
+    const clientUser = await Client.findById(userId);
+    if (!clientUser) {
+      return res.status(404).json({ message: "Client not found" });
     }
 
     const newTicketId = await generateTicketId();
 
     const newTicket = await Support.create({
       ticketId: newTicketId,
-      client,
+      client: clientUser.name || client, // use clientUser.name if exists
       subject,
       category,
       opened,
       status,
       userId,
-      email: crmUser.email, // ✅ Store user email from CRM
+      email: clientUser.email,
     });
 
     res.status(201).json(newTicket);
@@ -61,9 +61,7 @@ export const getAllTickets = async (req, res) => {
 export const getTicketById = async (req, res) => {
   try {
     const ticket = await Support.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
     res.status(200).json(ticket);
   } catch (error) {
     console.error("Error fetching ticket:", error);
@@ -71,15 +69,11 @@ export const getTicketById = async (req, res) => {
   }
 };
 
-// ✅ Update ticket (e.g., change status or subject)
+// ✅ Update ticket (status, subject, etc.)
 export const updateTicket = async (req, res) => {
   try {
-    const ticket = await Support.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    const ticket = await Support.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
     res.status(200).json(ticket);
   } catch (error) {
     console.error("Error updating ticket:", error);
@@ -91,9 +85,7 @@ export const updateTicket = async (req, res) => {
 export const deleteTicket = async (req, res) => {
   try {
     const ticket = await Support.findByIdAndDelete(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
     res.status(200).json({ message: "Ticket deleted successfully" });
   } catch (error) {
     console.error("Error deleting ticket:", error);
@@ -101,34 +93,27 @@ export const deleteTicket = async (req, res) => {
   }
 };
 
-// ✅ Get email of CRM user for a given ticket
+// ✅ Get email of client for a given ticket
 export const getEmailByTicketId = async (req, res) => {
   try {
     const ticket = await Support.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
-    // Use stored email or refetch if needed
-    const crmUser = await CRM.findById(ticket.userId);
-    if (!crmUser) {
-      return res.status(404).json({ message: "CRM user not found" });
-    }
+    const clientUser = await Client.findById(ticket.userId);
+    if (!clientUser) return res.status(404).json({ message: "Client not found" });
 
-    res.status(200).json({ email: crmUser.email });
+    res.status(200).json({ email: clientUser.email });
   } catch (error) {
-    console.error("Error fetching user email:", error);
-    res.status(500).json({ message: "Server error fetching user email" });
+    console.error("Error fetching client email:", error);
+    res.status(500).json({ message: "Server error fetching client email" });
   }
 };
 
-// ✅ Mark ticket as resolved (after sending email)
+// ✅ Mark ticket as resolved
 export const markTicketResolved = async (req, res) => {
   try {
     const ticket = await Support.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
     ticket.status = "Resolved";
     await ticket.save();
