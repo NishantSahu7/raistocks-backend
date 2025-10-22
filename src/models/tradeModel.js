@@ -17,10 +17,8 @@ const tradeSchema = new mongoose.Schema(
     lotSize: { type: String, default: "Optional" },
     lots: { type: Number, default: 1 },
     recommendationDateTime: { type: Date },
-    status: {
-      type: String,
-      default: "Pending",
-    },
+    title:{type: String},
+    status:{type: String}
   },
   { timestamps: true }
 );
