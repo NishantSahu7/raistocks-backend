@@ -30,6 +30,7 @@ const app = express();
 app.use(cookieParser());
 // ✅ Enable CORS (allow requests from frontend)
 const whitelist = [
+  "https://fantastic-kelpie-7dc39f.netlify.app",
   "https://unique-youtiao-11d4e5.netlify.app",
   "https://classy-begonia-022eef.netlify.app",
   "https://fantastic-kelpie-7dc39f.netlify.app",
