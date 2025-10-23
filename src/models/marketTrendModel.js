@@ -1,27 +1,15 @@
 import mongoose from "mongoose";
+import { attachTradeSetupHooks } from "../middleware/tradeSetupSync.js";
 
-const marketTrendSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: [true, "Title is required"],
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: [true, "Description is required"],
-    },
-    date: {
-      type: Date,
-      default: Date.now,
-    },
-    // createdBy: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User", // optional — if you want to know who created it
-    // },
-  },
-  { timestamps: true }
-);
+const marketTrendSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+}, { timestamps: true });
 
-const MarketTrend = mongoose.model("MarketTrend", marketTrendSchema);
-export default MarketTrend;
+attachTradeSetupHooks(marketTrendSchema, "MarketTrend", doc => ({
+  title: doc.title,
+  comment: doc.description,
+}));
+
+export default mongoose.model("MarketTrend", marketTrendSchema);

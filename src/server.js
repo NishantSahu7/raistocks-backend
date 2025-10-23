@@ -19,13 +19,13 @@ import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
 import supportRoutes from "./routes/supportRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 import clientAuthRoutes from "./routes/clientAuthRoutes.js";
+import marketSetupRoutes from "./routes/marketsetupRoutes.js";
+import tradeSetupRoutes from "./routes/tradesetupRoutes.js";
 import cookieParser from "cookie-parser";
 
 connectDB();
 
-
 const app = express();
-
 
 app.use(cookieParser());
 // ✅ Enable CORS (allow requests from frontend)
@@ -34,12 +34,12 @@ const whitelist = [
   "https://classy-begonia-022eef.netlify.app",
   "https://fantastic-kelpie-7dc39f.netlify.app",
   "https://sensational-maamoul-174c61.netlify.app",
-   "https://chipper-rugelach-27e08f.netlify.app",
+  "https://chipper-rugelach-27e08f.netlify.app",
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:5174",
-  "http://localhost:5175"
-
+  "http://localhost:5175",
+  "http://localhost:5176",
 ];
 
 const corsOptions = {
@@ -57,6 +57,9 @@ app.use(cors(corsOptions));
 // ✅ Parse JSON bodies (should be before your routes)
 app.use(express.json());
 
+// ✅ Serve static files from uploads directory
+app.use("/uploads", express.static("uploads"));
+
 // ✅ Your routes
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
@@ -65,6 +68,7 @@ app.use("/api/users/market-phase", marketPhaseRoutes);
 app.use("/api/admin/leads", leadRoutes);
 app.use("/api/crm", crmRoutes);
 app.use("/api/market-insights", marketInsightRoutes);
+app.use("/api/marketsetup", marketSetupRoutes);
 app.use("/api/research-reports", researchReportRoutes);
 app.use("/api/globalmarket", globalMarketRoutes);
 app.use("/api/vix", vixRoutes);
@@ -75,10 +79,8 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api/clients", clientRoutes);
-app.use("/client/auth", clientAuthRoutes); 
-
-
-
+app.use("/client/auth", clientAuthRoutes);
+app.use("/api/tradesetup", tradeSetupRoutes);
 
 
 const PORT = process.env.PORT || 5000;

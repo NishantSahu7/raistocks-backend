@@ -1,30 +1,18 @@
-// models/MarketInsight.js
 import mongoose from "mongoose";
+import { attachTradeSetupHooks } from "../middleware/tradeSetupSync.js";
 
-const marketInsightSchema = new mongoose.Schema(
-  {
-    marketInfo: {
-      type: String,
-      trim: true,
-    },
-    title: {
-      type: String,
-    },
-    comment: {
-      type: String,
-    },
-    sentiment: {
-      type: String,
-      // allow null when no sentiment provided; frontend will send null if none selected
-      default: null,
-    },
-    date: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { timestamps: true }
-);
+const marketInsightSchema = new mongoose.Schema({
+  marketInfo: String,
+  title: String,
+  comment: String,
+  sentiment: { type: String, default: null },
+  date: { type: Date, default: Date.now },
+}, { timestamps: true });
 
-const MarketInsight = mongoose.model("MarketInsight", marketInsightSchema);
-export default MarketInsight;
+// 🧩 Attach trade setup sync middleware
+attachTradeSetupHooks(marketInsightSchema, "MarketInsight", doc => ({
+  title: doc.title,
+  comment: doc.comment,
+}));
+
+export default mongoose.model("MarketInsight", marketInsightSchema);
