@@ -5,7 +5,7 @@ import TradeAction from "../models/tradeActionsModel.js";
 export const addTradeAction = async (req, res) => {
   try {
     const { tradeId } = req.params; // ✅ Take from params, not body
-    const { tradeId, type, title, price, comment, actionDateTime } = req.body;
+    const { type, title, price, comment, actionDateTime } = req.body;
 
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
@@ -19,11 +19,10 @@ export const addTradeAction = async (req, res) => {
       title,
       price,
       comment,
-            actionDateTime: new Date(actionDateTime),
-
+      actionDateTime: new Date(actionDateTime),
     });
 
-        // If the action is an exit, mark the trade as Closed in backend
+    // If the action is an exit, mark the trade as Closed in backend
     try {
       if (String(type || "").toLowerCase() === "exit") {
         await Trade.findByIdAndUpdate(tradeId, { status: "Closed" });
@@ -32,7 +31,6 @@ export const addTradeAction = async (req, res) => {
       console.error("Failed to update trade status after action:", err);
       // don't fail the action creation because of status update failure
     }
-
 
     res.status(201).json({
       message: "Action added successfully",
