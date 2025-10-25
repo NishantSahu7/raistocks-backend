@@ -10,6 +10,7 @@ import {
   markTicketResolved,
 } from "../controllers/supportController.js";
 
+
 const router = express.Router();
 
 // ✅ Create a new support ticket

@@ -38,7 +38,7 @@ const supportModelSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Open",
+      default: "Pending",
     },
   },
   { timestamps: true }

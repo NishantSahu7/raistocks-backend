@@ -7,6 +7,21 @@ const marketInsightSchema = new mongoose.Schema({
   comment: String,
   sentiment: { type: String, default: null },
   date: { type: Date, default: Date.now },
+      country: {
+      type: String,
+    },
+    currency: {
+      type: Number,
+    },
+    value: {
+      type: String,
+    },
+    globalcomment: {
+      type: String,
+    },
+        vixValue: {
+      type: String,
+    },
 }, { timestamps: true });
 
 // 🧩 Attach trade setup sync middleware

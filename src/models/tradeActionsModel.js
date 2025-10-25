@@ -15,6 +15,7 @@ const tradeActionSchema = new mongoose.Schema(
     },
         price: { type: Number, required: true },
     comment: { type: String, default: "" },
+    
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
