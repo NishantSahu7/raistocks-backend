@@ -1,13 +1,14 @@
+// models/trade.model.ts
 import mongoose from "mongoose";
 
 const tradeSchema = new mongoose.Schema(
   {
-    segment: { type: String }, // e.g. Cash, F&O, etc.
-    tradeType: { type: String }, // e.g. Swing, Intraday
-    action: { type: String, },
-    on: { type: String }, // e.g. Reliance, Banknifty
+    segment: { type: String },
+    tradeType: { type: String },
+    action: { type: String },
+    on: { type: String },
     entryPrice: { type: Number },
-    stoploss: { type: String,},
+    stoploss: { type: String },
     target1: { type: Number },
     target2: { type: Number },
     target3: { type: Number },
@@ -17,12 +18,13 @@ const tradeSchema = new mongoose.Schema(
     lotSize: { type: String, default: "Optional" },
     lots: { type: Number, default: 1 },
     recommendationDateTime: { type: Date },
-    title:{type: String},
-    status:{type: String},
-    risk:{type: String},
-    brief:{type: String}
+    title: { type: String },
+    status: { type: String },
+    risk: { type: String },
+    brief: { type: String },
+    createdAt: { type: Date, default: Date.now } // allow manual override
   },
-  { timestamps: true }
+  { timestamps: { createdAt: false, updatedAt: true } } // disable auto createdAt
 );
 
 export default mongoose.model("Trade", tradeSchema);
