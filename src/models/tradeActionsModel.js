@@ -1,6 +1,6 @@
 // models/tradeAction.model.ts
 import mongoose from "mongoose";
-import Trade from "./trade.model.js";
+import Trade from "./tradeModel.js";
 
 const tradeActionSchema = new mongoose.Schema(
   {
