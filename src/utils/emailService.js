@@ -3,15 +3,19 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: 587,
+  secure: false, // Use TLS
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // Allow self-signed certificates if needed
   },
 });
 
 export const sendResolutionEmail = async (to, subject, clientName) => {
   const mailOptions = {
-    from: `"Support Team" <${process.env.SMTP_USER}>`,
+    from: `"Support Team" <${process.env.FROM_EMAIL}>`,
     to,
     subject: `Issue Resolved: ${subject}`, // 👈 also appears in email subject line
     html: `

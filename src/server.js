@@ -10,7 +10,7 @@ import crmRoutes from "./routes/crmRoutes.js";
 import connectDB from "./config/db.js";
 import marketInsightRoutes from "./routes/marketInsightRoutes.js";
 import researchReportRoutes from "./routes/researchReportRoutes.js";
- import tradeRoutes from "./routes/tradeRoutes.js";
+import tradeRoutes from "./routes/tradeRoutes.js";
 import tradeActionsRoutes from "./routes/tradeActionsRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import tradeDiaryRoutes from "./routes/tradeDiaryRoutes.js";
@@ -19,6 +19,7 @@ import clientRoutes from "./routes/clientRoutes.js";
 import clientAuthRoutes from "./routes/clientAuthRoutes.js";
 import marketSetupRoutes from "./routes/marketsetupRoutes.js";
 import tradeSetupRoutes from "./routes/tradesetupRoutes.js";
+import tradeStrategyRoutes from "./routes/tradeStrategyRoutes.js";
 import cookieParser from "cookie-parser";
 
 connectDB();
@@ -56,7 +57,7 @@ app.use(cors(corsOptions));
 // ✅ Parse JSON bodies (should be before your routes)
 app.use(express.json());
 
-// ✅ Serve static files from uploads directory
+// ✅ Serve static files from uploads directory (for backward compatibility, but images are now on Cloudinary)
 app.use("/uploads", express.static("uploads"));
 
 // ✅ Your routes
@@ -69,7 +70,7 @@ app.use("/api/crm", crmRoutes);
 app.use("/api/market-insights", marketInsightRoutes);
 app.use("/api/marketsetup", marketSetupRoutes);
 app.use("/api/research-reports", researchReportRoutes);
- app.use("/api/trades", tradeRoutes);
+app.use("/api/trades", tradeRoutes);
 app.use("/api/trade-actions", tradeActionsRoutes);
 
 app.use("/api/subscription", subscriptionRoutes);
@@ -78,7 +79,7 @@ app.use("/api/support", supportRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/client/auth", clientAuthRoutes);
 app.use("/api/tradesetup", tradeSetupRoutes);
-
+app.use("/api/trade-strategies", tradeStrategyRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
