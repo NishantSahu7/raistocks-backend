@@ -15,6 +15,8 @@ export const createTrade = async (req, res) => {
         trade: newTrade,
       },
     });
+    console.log(req.body)
+    console.log(newTrade)
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
   }

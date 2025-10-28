@@ -22,7 +22,6 @@ const tradeSchema = new mongoose.Schema(
     status: { type: String },
     risk: { type: String },
     brief: { type: String },
-    trailSl: { type: String},
     createdAt: { type: Date, default: Date.now } // allow manual override
   },
   { timestamps: { createdAt: false, updatedAt: true } } // disable auto createdAt

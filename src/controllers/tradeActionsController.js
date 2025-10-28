@@ -5,7 +5,7 @@ import TradeAction from "../models/tradeActionsModel.js";
 export const addTradeAction = async (req, res) => {
   try {
     const { tradeId } = req.params; // ✅ Take from params, not body
-    const { type, title, price, comment, actionDateTime } = req.body;
+    const { type, title, price, comment, actionDateTime, trialSl } = req.body;
 
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
@@ -19,6 +19,7 @@ export const addTradeAction = async (req, res) => {
       title,
       price,
       comment,
+      trialSl,
       actionDateTime: new Date(actionDateTime),
     });
 
