@@ -9,15 +9,15 @@ export const createTrade = async (req, res) => {
     // req.body.crmUser = req.user.id;
 
     const newTrade = await TradeDiary.create(req.body);
-    console.log(newTrade)
+    console.log("req body",req.body)
     res.status(201).json({
       status: "success",
       data: {
         trade: newTrade,
       },
     });
-    console.log(req.body)
-    console.log(newTrade)
+     
+    console.log("new trade ",newTrade)
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
   }
