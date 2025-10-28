@@ -12,7 +12,7 @@ export const addTradeAction = async (req, res) => {
     if (!trade) {
       return res.status(404).json({ message: "Trade not found" });
     }
-
+    console.log("trade",trade)
     const action = await TradeAction.create({
       tradeId,
       type,
