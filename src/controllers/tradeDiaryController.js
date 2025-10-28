@@ -28,7 +28,9 @@ export const createTrade = async (req, res) => {
 // @access  Public
 export const getTradesForUser = async (req, res) => {
   try {
-    const trades = await TradeDiary.find({ crmUser: req.params.userId });
+    // const trades = await TradeDiary.find({ crmUser: req.params.userId });
+    const trades = await TradeDiary.find({ user_id: req.params.userId });
+
     res.status(200).json({
       status: "success",
       results: trades.length,
