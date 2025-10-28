@@ -40,7 +40,7 @@ import mongoose from "mongoose";
 const tradeDiarySchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "CRM",
+    ref: "Client",
     required: true
   },
   trade_title: String,
