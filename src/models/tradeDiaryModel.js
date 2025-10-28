@@ -51,7 +51,8 @@ const tradeDiarySchema = new mongoose.Schema({
   quantity: Number,
   pnl: Number,
   result: String,
-  date: Date
+  date: Date,
+  action: String,
 });
 const TradeDiary = mongoose.model("TradeDiary", tradeDiarySchema);
 
