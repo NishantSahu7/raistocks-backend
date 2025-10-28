@@ -9,6 +9,7 @@ export const createTrade = async (req, res) => {
     // req.body.crmUser = req.user.id;
 
     const newTrade = await TradeDiary.create(req.body);
+    console.log(newTrade)
     res.status(201).json({
       status: "success",
       data: {
