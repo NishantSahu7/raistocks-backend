@@ -58,7 +58,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // ✅ Serve static files from uploads directory (for backward compatibility, but images are now on Cloudinary)
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
 // ✅ Your routes
 app.use("/api/users", userRoutes);

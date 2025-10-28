@@ -47,7 +47,8 @@ export const createMarketSetup = async (req, res) => {
         });
     }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
+     const imageUrl = req.file?.path; // ✅ Cloudinary gives URL in path
+
 
     const marketSetup = new MarketSetup({
       on,
