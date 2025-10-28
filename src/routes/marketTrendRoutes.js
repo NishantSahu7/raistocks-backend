@@ -1,19 +1,27 @@
-import express from "express";
+ import express from "express";
 import {
   createMarketTrend,
   getMarketTrends,
   getMarketTrendById,
+  updateMarketTrend,
+  deleteMarketTrend,
 } from "../controllers/marketTrendController.js";
-// import { protect } from "../middleware/authMiddleware.js"; // optional if you want auth
+// import { protect } from "../middleware/authMiddleware.js"; // Add if authentication required
 
 const router = express.Router();
 
-// I will add the middleware to protect the routes if needed
-// Public routes
-router.get("/", getMarketTrends);
-router.get("/:id", getMarketTrendById);
+// ✅ Public routes
+router.get("/", getMarketTrends);        // Get all trends
+router.get("/:id", getMarketTrendById);  // Get single trend by ID
 
-// Protected route (optional)
-router.post("/", createMarketTrend); // add 'protect' if you want auth: router.post("/", protect, createMarketTrend);
+// ✅ Create new trend (with optional auth)
+// router.post("/", protect, createMarketTrend);
+router.post("/", createMarketTrend);
+
+// ✅ Update a trend by ID
+router.put("/:id", updateMarketTrend);
+
+// ✅ Delete a trend by ID
+router.delete("/:id", deleteMarketTrend);
 
 export default router;

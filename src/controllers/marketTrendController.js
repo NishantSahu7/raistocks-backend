@@ -50,3 +50,46 @@ export const getMarketTrendById = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ✅ Update a market trend by ID
+export const updateMarketTrend = async (req, res) => {
+  try {
+    const trend = await MarketTrend.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!trend) {
+      return res.status(404).json({ message: "Market trend not found" });
+    }
+
+    res.status(200).json({
+      message: "Market trend updated successfully",
+      updatedTrend: trend,
+    });
+  } catch (error) {
+    console.error("Update Trend Error:", error.message);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// ✅ Delete a market trend by ID
+export const deleteMarketTrend = async (req, res) => {
+  try {
+    const trend = await MarketTrend.findByIdAndDelete(req.params.id);
+
+    if (!trend) {
+      return res.status(404).json({ message: "Market trend not found" });
+    }
+
+    res.status(200).json({
+      message: "Market trend deleted successfully",
+      deletedTrend: trend,
+    });
+  } catch (error) {
+    console.error("Delete Trend Error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
