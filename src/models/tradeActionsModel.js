@@ -11,10 +11,10 @@ const tradeActionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["update", "book_profit", "stoploss_hit", "exit" , "trail_sl" , "trail_sl_hit"],
+      enum: ["update", "book_profit", "stoploss_hit", "exit" , "trail_sl_hit"],
       required: true,
     },
-    price: { type: Number, required: true },
+    price: { type: Number,},
     comment: { type: String, default: "" },
     createdAt: { type: Date, default: Date.now },
   },
