@@ -1,18 +1,29 @@
-import express from "express";
+ import express from "express";
 import {
   createMarketPhase,
   getMarketPhases,
   getMarketPhaseById,
+  updateMarketPhase,
+  deleteMarketPhase,
 } from "../controllers/marketPhaseController.js";
-// import { protect } from "../middleware/authMiddleware.js"; // optional if you want auth
+// import { protect } from "../middleware/authMiddleware.js"; // optional if auth enabled
 
 const router = express.Router();
 
-// Public routes
+// ✅ Get all
 router.get("/", getMarketPhases);
+
+// ✅ Get one by ID
 router.get("/:id", getMarketPhaseById);
 
-// Protected route (optional)
-router.post("/", createMarketPhase); // add 'protect' if you want auth: router.post("/", protect, createMarketPhase);
+// ✅ Create (add protect if you want authentication)
+// router.post("/", protect, createMarketPhase);
+router.post("/", createMarketPhase);
+
+// ✅ Update by ID
+router.put("/:id", updateMarketPhase);
+
+// ✅ Delete by ID
+router.delete("/:id", deleteMarketPhase);
 
 export default router;
