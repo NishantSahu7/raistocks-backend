@@ -6,13 +6,13 @@ export const addTradeAction = async (req, res) => {
   try {
     const { tradeId } = req.params; // ✅ Take from params, not body
     const { type, title, price, comment, actionDateTime, trialSl } = req.body;
-
+    console.log("body",req.body)
+  
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
     if (!trade) {
       return res.status(404).json({ message: "Trade not found" });
     }
-    console.log("trade",trade)
     const action = await TradeAction.create({
       tradeId,
       type,
