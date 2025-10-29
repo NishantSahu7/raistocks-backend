@@ -12,6 +12,7 @@ const tradeSchema = new mongoose.Schema(
     target1: { type: Number },
     target2: { type: Number },
     target3: { type: Number },
+    trailSl: { type: Number, default: null },
     timeDuration: { type: String, default: "Today" },
     weightageValue: { type: Number, default: 0 },
     weightageExtension: { type: String, default: "% of your capital" },

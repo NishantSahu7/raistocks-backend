@@ -103,3 +103,30 @@ export const deleteTrade = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// ✅ Update Trail Stoploss (trailSl)
+export const updateTrailSl = async (req, res) => {
+  try {
+    const { trailSl } = req.body;
+    
+    const trade = await Trade.findByIdAndUpdate(
+      req.params.id,
+      { trailSl },
+      { new: true }
+    );
+
+    if (!trade)
+      return res
+        .status(404)
+        .json({ success: false, message: "Trade not found" });
+
+    res.status(200).json({
+      success: true,
+      message: "Trail SL updated successfully",
+      trade,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+

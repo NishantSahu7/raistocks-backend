@@ -5,7 +5,9 @@ import {
   getTradeById,
   updateTrade,
   deleteTrade,
-  updateTradeStatus
+  updateTradeStatus,
+  updateTrailSl
+
 } from "../controllers/tradeController.js";
 
 const router = express.Router();
@@ -17,5 +19,6 @@ router.put("/:id", updateTrade);
 router.patch("/:id/status", updateTradeStatus); // Update trade status
      // Update trade
 router.delete("/:id", deleteTrade);    // Delete trade
+router.put("/:id/trail-sl", updateTrailSl);
 
 export default router;
