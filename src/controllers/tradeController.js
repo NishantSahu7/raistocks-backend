@@ -13,16 +13,31 @@ export const createTrade = async (req, res) => {
   }
 };
 
-// Get all trades
+
+ // ✅ Get all trades including actions
 export const getAllTrades = async (req, res) => {
   try {
-    const trades = await Trade.find().sort({ createdAt: -1 });
-    res.status(200).json(trades);
+    const trades = await Trade.aggregate([
+      {
+        $lookup: {
+          from: "tradeactions",  // MongoDB auto pluralizes collection names
+          localField: "_id",
+          foreignField: "tradeId",
+          as: "actions",
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Trades fetched successfully",
+      trades,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 // Get single trade by ID
 export const getTradeById = async (req, res) => {
   try {
