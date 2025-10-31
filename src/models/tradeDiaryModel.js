@@ -54,17 +54,20 @@ import mongoose from "mongoose";
 //   date: Date,
 //   action: String,
 // });
-const tradeDiarySchema = new mongoose.Schema({
+ const tradeDiarySchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Client",
-    required: true
+    required: true,
   },
   trade_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Trade",  // ✅ Reference to your Trade model
-    required: true
+    ref: "Trade", // ✅ Add this
+    required: true,
   },
+  trade_title: String,
+  recommended_entry: Number,
+  recommended_exit: Number,
   entry: Number,
   exit: Number,
   quantity: Number,
@@ -72,7 +75,8 @@ const tradeDiarySchema = new mongoose.Schema({
   result: String,
   date: Date,
   action: String,
-}, { timestamps: true });
+});
+
 
 const TradeDiary = mongoose.model("TradeDiary", tradeDiarySchema);
 

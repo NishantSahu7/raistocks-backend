@@ -132,125 +132,202 @@
 //     res.status(404).json({ status: "fail", message: "Trade not found" });
 //   }
 // };
+// ✅ Get all trade diary entries for a user (with trade details)
+ 
+import mongoose from "mongoose";
 import TradeDiary from "../models/tradeDiaryModel.js";
+import Trade from "../models/tradeModel.js";
 
 /**
  * @desc    Create a new trade diary entry
  * @route   POST /api/v1/trade-diary
- * @access  Public (or Private if you add auth later)
+ * @access  Private
  */
 export const createTradeDiary = async (req, res) => {
   try {
-    const newTrade = await TradeDiary.create(req.body);
-    console.log("New trade diary entry created:", req.body);
+    const {
+      user_id,
+      trade_id,
+      entry,
+      exit,
+      quantity,
+      pnl,
+      result,
+      action,
+      date,
+    } = req.body;
+
+    if (!user_id || !trade_id) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Missing user_id or trade_id" });
+    }
+
+    const trade = await Trade.findById(trade_id);
+    if (!trade) {
+      return res.status(404).json({ status: "fail", message: "Trade not found" });
+    }
+
+    const newTradeDiary = await TradeDiary.create({
+      user_id,
+      trade_id,
+      trade_title: trade.trade_title || trade.title,
+      recommended_entry:
+        trade.recommended_entry || trade.entry || trade.entryPrice,
+      recommended_exit:
+        trade.recommended_exit ||
+        trade.exit ||
+        trade.target1 ||
+        trade.target2 ||
+        trade.target3,
+      entry,
+      exit,
+      quantity,
+      pnl,
+      result,
+      action,
+      date,
+    });
 
     res.status(201).json({
-      success: true,
-      message: "Trade diary entry created successfully",
-      data: newTrade,
+      status: "success",
+      data: newTradeDiary,
     });
   } catch (err) {
-    console.error("Error creating trade diary entry:", err.message);
-    res.status(400).json({ success: false, message: err.message });
+    console.error("❌ Error creating trade diary:", err);
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
 /**
- * @desc    Get all trade diary entries for a specific user
+ * @desc    Get all trade diary entries for a user (with trade details)
  * @route   GET /api/v1/trade-diary/user/:userId
- * @access  Public
+ * @access  Private
  */
 export const getTradesForUser = async (req, res) => {
   try {
-    const trades = await TradeDiary.find({ user_id: req.params.userId }).sort({
-      date: -1,
-    });
+    const userId = req.params.userId;
+
+    const trades = await TradeDiary.aggregate([
+      {
+        $match: { user_id: new mongoose.Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: "trades", // MongoDB collection name for Trade model
+          localField: "trade_id",
+          foreignField: "_id",
+          as: "tradeDetails",
+        },
+      },
+      {
+        $unwind: { path: "$tradeDetails", preserveNullAndEmptyArrays: true },
+      },
+      { $sort: { date: -1 } },
+    ]);
 
     res.status(200).json({
-      success: true,
+      status: "success",
       results: trades.length,
       data: trades,
     });
   } catch (err) {
-    res.status(404).json({ success: false, message: "Trades not found" });
+    console.error("❌ Error fetching trades:", err);
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
 /**
- * @desc    Get a single trade diary entry by ID
+ * @desc    Get a single trade diary entry by ID (with trade details)
  * @route   GET /api/v1/trade-diary/:id
- * @access  Public
+ * @access  Private
  */
 export const getTradeDiaryById = async (req, res) => {
   try {
-    const trade = await TradeDiary.findById(req.params.id);
+    const id = req.params.id;
 
-    if (!trade) {
+    const trades = await TradeDiary.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(id) },
+      },
+      {
+        $lookup: {
+          from: "trades",
+          localField: "trade_id",
+          foreignField: "_id",
+          as: "tradeDetails",
+        },
+      },
+      { $unwind: { path: "$tradeDetails", preserveNullAndEmptyArrays: true } },
+    ]);
+
+    if (!trades.length) {
       return res
         .status(404)
-        .json({ success: false, message: "Trade not found" });
+        .json({ status: "fail", message: "Trade Diary entry not found" });
     }
 
-    res.status(200).json({ success: true, data: trade });
+    res.status(200).json({
+      status: "success",
+      data: trades[0],
+    });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    console.error("❌ Error fetching trade diary:", err);
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
 /**
- * @desc    Update a trade diary entry
+ * @desc    Update a trade diary entry by ID
  * @route   PATCH /api/v1/trade-diary/:id
- * @access  Public
+ * @access  Private
  */
 export const updateTradeDiary = async (req, res) => {
   try {
-    const updatedTrade = await TradeDiary.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const id = req.params.id;
+    const updated = await TradeDiary.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
-    if (!updatedTrade) {
+    if (!updated) {
       return res
         .status(404)
-        .json({ success: false, message: "Trade not found" });
+        .json({ status: "fail", message: "Trade diary not found" });
     }
 
     res.status(200).json({
-      success: true,
-      message: "Trade diary entry updated successfully",
-      data: updatedTrade,
+      status: "success",
+      data: updated,
     });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    console.error("❌ Error updating trade diary:", err);
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
 /**
  * @desc    Delete a trade diary entry
  * @route   DELETE /api/v1/trade-diary/:id
- * @access  Public
+ * @access  Private
  */
 export const deleteTradeDiary = async (req, res) => {
   try {
-    const trade = await TradeDiary.findById(req.params.id);
+    const id = req.params.id;
+    const deleted = await TradeDiary.findByIdAndDelete(id);
 
-    if (!trade) {
+    if (!deleted) {
       return res
         .status(404)
-        .json({ success: false, message: "Trade not found" });
+        .json({ status: "fail", message: "Trade diary not found" });
     }
 
-    await TradeDiary.findByIdAndDelete(req.params.id);
-
-    res
-      .status(200)
-      .json({ success: true, message: "Trade diary entry deleted successfully" });
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    console.error("❌ Error deleting trade diary:", err);
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
