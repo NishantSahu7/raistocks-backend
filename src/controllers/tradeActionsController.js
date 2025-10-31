@@ -2,17 +2,69 @@ import Trade from "../models/tradeModel.js";
 import TradeAction from "../models/tradeActionsModel.js";
 
 // ✅ Add a new action for a trade
+// export const addTradeAction = async (req, res) => {
+//   try {
+//     const { tradeId } = req.params; // ✅ Take from params, not body
+//     const { type, title, price, comment, actionDateTime, trialSl } = req.body;
+//     console.log("body",req.body)
+  
+//     // Check if trade exists
+//     const trade = await Trade.findById(tradeId);
+//     if (!trade) {
+//       return res.status(404).json({ message: "Trade not found" });
+//     }
+//     const action = await TradeAction.create({
+//       tradeId,
+//       type,
+//       title,
+//       price,
+//       comment,
+//       trialSl,
+//       actionDateTime: new Date(actionDateTime),
+//     });
+
+//     // If the action is an exit, mark the trade as Closed in backend
+//     try {
+//       if (String(type || "").toLowerCase() === "exit") {
+//         if (String(type || "").toLowerCase() === "exit") {
+//   console.log("➡️ Exit triggered with price:", price, typeof price);
+//   await Trade.findByIdAndUpdate(tradeId, {
+//     status: "Closed",
+//     exit: price,
+//   });
+// }
+
+//         await Trade.findByIdAndUpdate(tradeId, { status: "Closed" ,
+//           exit: price,
+//         });
+//       }
+//     } catch (err) {
+//       console.error("Failed to update trade status after action:", err);
+//       // don't fail the action creation because of status update failure
+//     }
+
+//     res.status(201).json({
+//       message: "Action added successfully",
+//       action,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error adding action", error });
+//   }
+// };
 export const addTradeAction = async (req, res) => {
   try {
-    const { tradeId } = req.params; // ✅ Take from params, not body
+    const { tradeId } = req.params;
     const { type, title, price, comment, actionDateTime, trialSl } = req.body;
-    console.log("body",req.body)
-  
+    console.log("body", req.body);
+
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
     if (!trade) {
       return res.status(404).json({ message: "Trade not found" });
     }
+
+    // Create action
     const action = await TradeAction.create({
       tradeId,
       type,
@@ -23,24 +75,19 @@ export const addTradeAction = async (req, res) => {
       actionDateTime: new Date(actionDateTime),
     });
 
-    // If the action is an exit, mark the trade as Closed in backend
+    // 🧠 If type is NOT "update", mark trade Closed and record exit price
     try {
-      if (String(type || "").toLowerCase() === "exit") {
-        if (String(type || "").toLowerCase() === "exit") {
-  console.log("➡️ Exit triggered with price:", price, typeof price);
-  await Trade.findByIdAndUpdate(tradeId, {
-    status: "Closed",
-    exit: price,
-  });
-}
-
-        await Trade.findByIdAndUpdate(tradeId, { status: "Closed" ,
+      if (String(type || "").toLowerCase() !== "update") {
+        console.log("🔹 Marking trade closed with exit price:", price);
+        await Trade.findByIdAndUpdate(tradeId, {
+          status: "Closed",
           exit: price,
         });
+      } else {
+        console.log("⚙️ Skipped close — type is update");
       }
     } catch (err) {
       console.error("Failed to update trade status after action:", err);
-      // don't fail the action creation because of status update failure
     }
 
     res.status(201).json({
