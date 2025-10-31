@@ -26,7 +26,9 @@ export const addTradeAction = async (req, res) => {
     // If the action is an exit, mark the trade as Closed in backend
     try {
       if (String(type || "").toLowerCase() === "exit") {
-        await Trade.findByIdAndUpdate(tradeId, { status: "Closed" });
+        await Trade.findByIdAndUpdate(tradeId, { status: "Closed" ,
+          exit: price,
+        });
       }
     } catch (err) {
       console.error("Failed to update trade status after action:", err);
