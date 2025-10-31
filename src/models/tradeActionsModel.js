@@ -25,6 +25,7 @@ const tradeActionSchema = new mongoose.Schema(
     comment: { type: String, default: "" },
     createdAt: { type: Date, default: Date.now },
     trialSl: { type: String, default: "" },
+    actionDateTime: { type: Date, required: true },
   },
   { timestamps: true }
 );
