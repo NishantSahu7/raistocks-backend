@@ -1,6 +1,5 @@
 import Trade from "../models/tradeModel.js";
 import TradeAction from "../models/tradeActionsModel.js";
-import moment from "moment-timezone";
 // ✅ Add a new action for a trade
 // export const addTradeAction = async (req, res) => {
 //   try {
@@ -57,7 +56,6 @@ export const addTradeAction = async (req, res) => {
     const { tradeId } = req.params;
     const { type, title, price, comment, actionDateTime, trialSl } = req.body;
     console.log("body", req.body);
-const utcDate = moment.tz(actionDateTime, "Asia/Kolkata").toDate();
     // Check if trade exists
     const trade = await Trade.findById(tradeId);
     if (!trade) {
@@ -72,7 +70,7 @@ const utcDate = moment.tz(actionDateTime, "Asia/Kolkata").toDate();
       price,
       comment,
       trialSl,
-       actionDateTime: utcDate,
+      actionDateTime,
     });
 
     // 🧠 If type is NOT "update", mark trade Closed and record exit price
