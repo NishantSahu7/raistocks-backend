@@ -70,7 +70,8 @@ export const addTradeAction = async (req, res) => {
       price,
       comment,
       trialSl,
-      actionDateTime,
+      actionDateTime: new Date(actionDateTime).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+
     });
 
     // 🧠 If type is NOT "update", mark trade Closed and record exit price
