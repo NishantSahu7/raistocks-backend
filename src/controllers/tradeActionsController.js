@@ -70,7 +70,7 @@ export const addTradeAction = async (req, res) => {
       price,
       comment,
       trialSl,
-      actionDateTime: new Date(actionDateTime).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      actionDateTime: new Date(actionDateTime),
 
     });
 
