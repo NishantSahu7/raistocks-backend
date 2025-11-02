@@ -72,7 +72,7 @@ export const addTradeAction = async (req, res) => {
       price,
       comment,
       trialSl,
-      actionDateTime: new Date(actionDateTime),
+      actionDateTime,
     });
 
     // 🧠 If type is NOT "update", mark trade Closed and record exit price
