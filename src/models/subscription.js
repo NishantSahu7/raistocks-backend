@@ -8,7 +8,7 @@ const subscriptionSchema = new mongoose.Schema({
   dob: { type: Date, required: true },
   pan: { type: String },
   planId: { type: String, required: true },
-  planName: { type: String, required: true }, // ✅ added plan name field
+  planName: { type: String, required: true }, 
   razorpayOrderId: { type: String },
   razorpayPaymentId: { type: String },
   razorpaySignature: { type: String },

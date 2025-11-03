@@ -20,6 +20,7 @@ import clientAuthRoutes from "./routes/clientAuthRoutes.js";
 import marketSetupRoutes from "./routes/marketsetupRoutes.js";
 import tradeSetupRoutes from "./routes/tradesetupRoutes.js";
 import tradeStrategyRoutes from "./routes/tradeStrategyRoutes.js";
+import planSubscriptionRoutes from "./routes/planSubscriptionRoutes.js";
 import cookieParser from "cookie-parser";
 
 connectDB();
@@ -72,6 +73,7 @@ app.use("/api/marketsetup", marketSetupRoutes);
 app.use("/api/research-reports", researchReportRoutes);
 app.use("/api/trades", tradeRoutes);
 app.use("/api/trade-actions", tradeActionsRoutes);
+app.use("/api/plan-subscriptions", planSubscriptionRoutes);
 
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/trade-diary", tradeDiaryRoutes);
