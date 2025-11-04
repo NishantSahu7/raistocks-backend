@@ -1,30 +1,3 @@
-// import mongoose from "mongoose";
-
-// const pricingOptionSchema = new mongoose.Schema({
-//   type: {
-//     type: String,
-//     enum: ["Monthly", "Quarterly", "Yearly"],
-//     required: false,
-//   },
-//   price: { type: Number, default: 0 },
-//   features: [{ type: String }],
-//   services: [{ type: String }],
-// });
-
-// const planSubscriptionSchema = new mongoose.Schema({
-//   planName: { type: String, required: true }, // e.g. "Premium", "Trader"
-//   description: { type: String },
-//   isFree: { type: Boolean, default: false },
-//   duration: { type: String }, // e.g. "15 Days" (for trial)
-//   accessLevel: { type: String },
-//   emailSupport: { type: Boolean, default: false },
-//   adminApproval: { type: Boolean, default: false },
-//   pricingOptions: [pricingOptionSchema],
-// });
-
-// export default mongoose.model("SubscriptionPlan", planSubscriptionSchema);
-
-
 import mongoose from "mongoose";
 
 const subServiceSchema = new mongoose.Schema({

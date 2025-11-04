@@ -1,10 +1,82 @@
 // controllers/clientController.js
 import Client from "../models/clientModel.js";
 
-// ✅ Create new client
+// ✅ Create new clien
+
+// export const createClient = async (req, res) => {
+//   try {
+//     const { name, email, subscription, planType, duration = 0, kyc, status } = req.body;
+
+//     // 🧠 Auto calculate daysLeft based on planType
+//     let daysLeft = 0;
+
+//     if (planType === "Trial") {
+//       daysLeft = duration || 14; // default 14 days if not provided
+//     } else if (planType === "Monthly") {
+//       daysLeft = 30;
+//     } else if (planType === "Quarterly") {
+//       daysLeft = 90;
+//     } else if (planType === "Yearly") {
+//       daysLeft = 365;
+//     }
+
+//     const client = await Client.create({
+//       name,
+//       email,
+//       subscription,
+//       planType,
+//       duration,
+//       daysLeft,
+//       kyc,
+//       status,
+//     });
+
+//     res.status(201).json(client);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
 export const createClient = async (req, res) => {
   try {
-    const client = await Client.create(req.body);
+    const {
+      name,
+      email,
+      subscription,
+      planType,
+      duration = 0,
+      kyc,
+      status,
+      amount = 0,
+    } = req.body;
+
+    // 🧠 Auto calculate daysLeft based on planType
+    let daysLeft = 0;
+
+    if (planType === "Trial") {
+      const extractedDays = parseInt(duration.match(/\d+/)?.[0] || "14", 10);
+      daysLeft = extractedDays;
+    } else if (planType === "Monthly") {
+      daysLeft = 30;
+    } else if (planType === "Quarterly") {
+      daysLeft = 90;
+    } else if (planType === "Yearly") {
+      daysLeft = 365;
+    }
+
+    // ✅ Save client with amount
+    const client = await Client.create({
+      name,
+      email,
+      subscription,
+      planType,
+      duration,
+      daysLeft,
+      kyc,
+      status,
+      amount, // 💰 include here
+    });
+
     res.status(201).json(client);
   } catch (error) {
     res.status(400).json({ message: error.message });
