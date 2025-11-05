@@ -38,3 +38,33 @@ export const sendResolutionEmail = async (to, subject, clientName) => {
     throw error; // Re-throw to handle in controller
   }
 };
+
+// utils/emailService.js
+export const sendReplyEmail = async (clientEmail, ticketSubject, clientName, replyMessage) => {
+  try {
+    console.log("📧 Sending reply email to:", clientEmail);
+    
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #4CAF50;">Hello ${clientName},</h2>
+        <p>There is a new reply to your ticket regarding <strong>"${ticketSubject}"</strong>:</p>
+        <blockquote style="border-left: 4px solid #4CAF50; margin: 10px 0; padding-left: 10px;">${replyMessage}</blockquote>
+        <p>If you have any additional questions, feel free to reply to this email.</p>
+        <br/>
+        <p style="font-style: italic;">– The Support Team</p>
+      </div>
+    `;
+
+    // replace this with your actual email sending code
+    console.log("✅ Email HTML preview:\n", htmlContent);
+
+    // pretend sending email, e.g., using nodemailer
+    // await transporter.sendMail({ to: clientEmail, subject: `Reply: ${ticketSubject}`, html: htmlContent });
+
+    console.log("✅ Email sent successfully");
+  } catch (err) {
+    console.error("❌ Error sending reply email:", err);
+    throw err;
+  }
+};
+

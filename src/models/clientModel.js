@@ -25,6 +25,9 @@ const clientSchema = new mongoose.Schema(
     // Payment reference
     razorpayOrderId: { type: String, default: "" },
     razorpayPaymentId: { type: String, default: "" },
+
+    // Notifications 
+    notifications: [{ type: String }],
   },
   { timestamps: true }
 );
