@@ -2,6 +2,9 @@
 import Support from "../models/supportModel.js";
 import Client from "../models/clientModel.js";
 import { sendResolutionEmail } from "../utils/emailService.js";
+import { sendReplyEmail } from "../utils/emailService.js";
+import { response } from "express";
+import User from "../models/userModel.js";
 
 // 🧮 Utility: Generate sequential Ticket IDs
 let ticketCounter = 100;
@@ -27,11 +30,12 @@ export const createTicket = async (req, res) => {
     const newTicket = await Support.create({
       ticketId: newTicketId,
       client: clientUser.name || client,
+    
       subject,
       category,
       opened,
       status: "Pending", // 👈 Always start as "Pending"
-      userId,
+      userId,// admin id
       email: clientUser.email,
     });
 
@@ -147,3 +151,95 @@ export const markTicketResolved = async (req, res) => {
     });
   }
 };
+
+ // ✅ Add a reply to a support ticket
+// export const addTicketReply = async (req, res) => {
+//   try {
+//     const { message, senderId } = req.body;
+
+//     if (!message || !senderId) {
+//       return res.status(400).json({ message: "Missing required fields" });
+//     }
+
+//     const ticket = await Support.findById(req.params.id);
+//     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+//     // Add the reply
+//     ticket.replies.push({ message, senderId });
+//     await ticket.save();
+
+//     res.status(200).json({
+//       message: "Reply added successfully",
+//       replies: ticket.replies,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error adding reply:", error);
+//     res.status(500).json({ message: "Server error adding reply" });
+//   }
+// };
+
+
+export const addTicketReply = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { message, senderId } = req.body;
+
+    if (!message || !senderId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const ticket = await Support.findById(req.params.id);
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+    const clientUser = await Client.findById(ticket.userId);
+    if (!clientUser) return res.status(404).json({ message: "Client not found" });
+
+    // ✅ Fetch sender's name from User model
+    const sender = await User.findById(senderId).select("name");
+    if (!sender) return res.status(404).json({ message: "Sender not found" });
+
+    // Add reply with both senderId and name
+    ticket.replies.push({ message, senderId, name: sender.name });
+    await ticket.save();
+
+    try {
+      await sendReplyEmail(
+        clientUser.email,
+        ticket.subject,
+        clientUser.name || ticket.client,
+        message
+      );
+    } catch (emailError) {
+      console.error("❌ Error sending reply email:", emailError);
+      return res.status(500).json({
+        message: "Reply added, but failed to send email",
+        replies: ticket.replies,
+      });
+    }
+
+    res.status(200).json({
+      message: "Reply added and email sent successfully",
+      replies: ticket.replies,
+    });
+  } catch (error) {
+    console.error("❌ Error adding reply:", error);
+    res.status(500).json({ message: "Server error adding reply" });
+  }
+};
+
+
+
+// ✅ Get all replies for a ticket thread
+export const getTicketReplies = async (req, res) => {
+  try {
+    const ticket = await Support.findById(req.params.id)
+      .populate("replies.senderId", "name email"); // optional populate for details
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+    res.status(200).json(ticket.replies);
+  } catch (error) {
+    console.error("❌ Error fetching replies:", error);
+    res.status(500).json({ message: "Server error fetching replies" });
+  }
+};
+

@@ -8,6 +8,8 @@ import {
   deleteTicket,
   getEmailByTicketId,
   markTicketResolved,
+  addTicketReply,
+  getTicketReplies,
 } from "../controllers/supportController.js";
 
 
@@ -33,5 +35,11 @@ router.get("/:id/email", getEmailByTicketId);
 
 // ✅ Mark ticket as resolved (after sending email)
 router.put("/:id/resolve", markTicketResolved);
+
+// ✅ Replies Routes
+router.post("/:id/replies", addTicketReply); // add new reply
+router.get("/:id/replies", getTicketReplies); // get all replies
+
+
 
 export default router;
