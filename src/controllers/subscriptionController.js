@@ -1,104 +1,27 @@
-//controllers/subscriptionController.js
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { Subscription } from "../models/subscription.js";
 import Client from "../models/clientModel.js";
+import { generateClientId } from "../utils/generateClientId.js";
 
+// ✅ Initialize Razorpay instance
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// ✅ Create Razorpay Order & Save Subscription
-// export const createSubscriptionOrder = async (req, res) => {
-//   try {
-//     console.log("Received req.body:", req.body);
-
-//     const {
-//       name,
-//       email,
-//       phone,
-//       dob,
-//       pan,
-//       planId,
-//       planName,
-//       amount,
-//       planType,
-//       duration,
-//     } = req.body || {};
-
-//     if (!name || !email || !phone || !dob || !planId || !planName) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Missing required fields",
-//       });
-//     }
-
-//     console.log("Creating Razorpay order with amount:", amount);
-
-//     // ✅ Create Razorpay order
-//     let order;
-//     try {
-//       order = await razorpay.orders.create({
-//         amount: Number(amount) * 100, // amount in paise
-//         currency: "INR",
-//         receipt: `receipt_${Date.now()}`,
-//         payment_capture: true,
-//       });
-//       console.log("Razorpay order created:", order.id);
-//     } catch (err) {
-//       console.error("Full Razorpay error:", JSON.stringify(err, null, 2));
-//       return res.status(err.statusCode || 500).json({
-//         success: false,
-//         message: "Razorpay order creation failed",
-//         error: err.message,
-//       });
-//     }
-
-//     // ✅ Save subscription in DB
-//     const subscription = new Subscription({
-//       name,
-//       email,
-//       phone,
-//       dob,
-//       pan,
-//       planId,
-//       planName,
-//       planType: planType || "", // 🩵 safe default
-//       duration: duration || 0, // 🩵 safe default
-//       amount: Number(amount) || 0, // 🩵 safe default
-//       razorpayOrderId: order.id,
-//     });
-
-//     await subscription.save();
-//     console.log("💾 Subscription saved:", subscription.planName);
-
-//     res.status(200).json({
-//       success: true,
-//       orderId: order.id,
-//       amount: order.amount,
-//       currency: order.currency,
-//     });
-//   } catch (err) {
-//     console.error("Error in createSubscriptionOrder:", err);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server Error",
-//       error: err.message,
-//     });
-//   }
-// };
-
+// ✅ Create Razorpay Order (Subscription Start)
 export const createSubscriptionOrder = async (req, res) => {
-  try {
-    console.log("Received req.body:", req.body);
+  console.log("🟢 Received req.body:", req.body);
 
+  try {
     const {
       name,
       email,
       phone,
       dob,
       pan,
+      state,
       planId,
       planName,
       amount,
@@ -106,6 +29,7 @@ export const createSubscriptionOrder = async (req, res) => {
       duration,
     } = req.body || {};
 
+    // Validate required fields
     if (!name || !email || !phone || !dob || !planId || !planName) {
       return res.status(400).json({
         success: false,
@@ -113,21 +37,21 @@ export const createSubscriptionOrder = async (req, res) => {
       });
     }
 
-    // 🧩 Safe defaults
+    // 🧩 Defaults
     let finalPlanType = planType || "Monthly";
     let finalDuration = duration;
     let finalAmount = Number(amount) || 0;
 
-    // 🧮 Auto duration fallback
+    // Auto set duration based on plan type
     if (!finalDuration || finalDuration === 0) {
       if (finalPlanType === "Trial") finalDuration = 15;
       else if (finalPlanType === "Monthly") finalDuration = 30;
       else if (finalPlanType === "Quarterly") finalDuration = 90;
       else if (finalPlanType === "Yearly") finalDuration = 365;
-      else finalDuration = 30; // default
+      else finalDuration = 30;
     }
 
-    console.log("✅ Finalized Plan:", {
+    console.log("📦 Finalized Plan:", {
       planType: finalPlanType,
       duration: finalDuration,
       amount: finalAmount,
@@ -142,9 +66,9 @@ export const createSubscriptionOrder = async (req, res) => {
         receipt: `receipt_${Date.now()}`,
         payment_capture: true,
       });
-      console.log("Razorpay order created:", order.id);
+      console.log("✅ Razorpay order created:", order.id);
     } catch (err) {
-      console.error("Full Razorpay error:", JSON.stringify(err, null, 2));
+      console.error("❌ Razorpay Error:", err);
       return res.status(err.statusCode || 500).json({
         success: false,
         message: "Razorpay order creation failed",
@@ -152,13 +76,14 @@ export const createSubscriptionOrder = async (req, res) => {
       });
     }
 
-    // ✅ Save subscription in DB
+    // ✅ Save subscription record
     const subscription = new Subscription({
       name,
       email,
       phone,
       dob,
       pan,
+      state,
       planId,
       planName,
       planType: finalPlanType,
@@ -185,22 +110,22 @@ export const createSubscriptionOrder = async (req, res) => {
     });
   }
 };
-
 export const verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
+    // 🧩 Find subscription
     const subscription = await Subscription.findOne({
       razorpayOrderId: razorpay_order_id,
     });
-
-    if (!subscription)
+    if (!subscription) {
       return res
         .status(404)
         .json({ success: false, message: "Subscription not found" });
+    }
 
-    // ✅ Verify signature
+    // ✅ Verify Razorpay signature
     const generated_signature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -209,52 +134,85 @@ export const verifyPayment = async (req, res) => {
     if (generated_signature !== razorpay_signature) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid signature" });
+        .json({ success: false, message: "Invalid payment signature" });
     }
 
-    // ✅ Save verified payment info
+    // ✅ Fetch payment details
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
+    const paymentMethod = payment?.method || "Test Payment";
+    const paymentStatus =
+      payment?.status === "captured" ? "Success" : "Test Success";
+
+    // ✅ Update subscription with payment details
     subscription.razorpayPaymentId = razorpay_payment_id;
     subscription.razorpaySignature = razorpay_signature;
+    subscription.paymentMethod = paymentMethod;
+    subscription.paymentStatus = paymentStatus;
     await subscription.save();
 
-    console.log("✅ Payment verified for:", subscription.email);
+    console.log("💳 Payment verified for:", subscription.email);
 
-    // ✅ Use values directly from subscription document
-    let planType = subscription.planType || "Monthly";
-    let duration = subscription.duration || 30;
-    let amount = subscription.amount || 0;
-    let daysLeft = 0;
+    // ✅ Determine duration & days left
+    const planType = subscription.planType || "Monthly";
+    const duration =
+      planType === "Trial"
+        ? 15
+        : planType === "Quarterly"
+        ? 90
+        : planType === "Yearly"
+        ? 365
+        : subscription.duration || 30;
 
-    if (planType === "Trial") {
-      const extractedDays = parseInt(duration.match?.(/\d+/)?.[0] || "14", 10);
-      daysLeft = extractedDays;
-    } else if (planType === "Monthly") daysLeft = 30;
-    else if (planType === "Quarterly") daysLeft = 90;
-    else if (planType === "Yearly") daysLeft = 365;
-    else daysLeft = duration; // fallback for custom
+    const daysLeft = duration;
 
-    // ✅ Auto-create or update Client record
-    const existingClient = await Client.findOne({ email: subscription.email });
+    // ✅ Create or update client
+    let existingClient = await Client.findOne({ email: subscription.email });
 
     if (existingClient) {
       existingClient.subscription = subscription.planName;
       existingClient.planType = planType;
       existingClient.duration = duration;
-      existingClient.amount = amount;
+      existingClient.amount = subscription.amount;
       existingClient.daysLeft = daysLeft;
+      existingClient.phone = subscription.phone;
+      existingClient.dob = subscription.dob;
+      existingClient.pan = subscription.pan;
+      existingClient.state = subscription.state;
+      existingClient.razorpayOrderId = razorpay_order_id;
+      existingClient.razorpayPaymentId = razorpay_payment_id;
+      existingClient.method = paymentMethod;
+      existingClient.status = paymentStatus;
+
       await existingClient.save();
       console.log("🔄 Existing client updated:", existingClient.email);
     } else {
+      // ✅ Generate unique Client ID
+      const clientId = await generateClientId();
+      console.log("🆕 Generated Client ID:", clientId);
+
       await Client.create({
+        clientId, // 👈 add here
         name: subscription.name,
         email: subscription.email,
+        phone: subscription.phone,
+        dob: subscription.dob,
+        pan: subscription.pan,
+        state: subscription.state,
         subscription: subscription.planName,
         planType,
         duration,
-        amount,
+        amount: subscription.amount,
         daysLeft,
+        kyc: "Pending",
+        status: paymentStatus,
+        method: paymentMethod,
+        razorpayOrderId: razorpay_order_id,
+        razorpayPaymentId: razorpay_payment_id,
       });
-      console.log("🆕 New client created:", subscription.email);
+
+      console.log(
+        `🆕 New client created: ${subscription.email} 🪪 ID: ${clientId}`
+      );
     }
 
     return res.status(200).json({
@@ -262,7 +220,7 @@ export const verifyPayment = async (req, res) => {
       message: "Payment verified successfully",
     });
   } catch (err) {
-    console.error("Error in verifyPayment:", err);
+    console.error("❌ Error in verifyPayment:", err);
     res.status(500).json({
       success: false,
       message: "Server Error",

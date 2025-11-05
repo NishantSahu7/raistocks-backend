@@ -22,6 +22,7 @@ import tradeSetupRoutes from "./routes/tradesetupRoutes.js";
 import tradeStrategyRoutes from "./routes/tradeStrategyRoutes.js";
 import planSubscriptionRoutes from "./routes/planSubscriptionRoutes.js";
 import cookieParser from "cookie-parser";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
 
 connectDB();
 
@@ -82,6 +83,7 @@ app.use("/api/clients", clientRoutes);
 app.use("/client/auth", clientAuthRoutes);
 app.use("/api/tradesetup", tradeSetupRoutes);
 app.use("/api/trade-strategies", tradeStrategyRoutes);
+app.use("/api/invoice", invoiceRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
