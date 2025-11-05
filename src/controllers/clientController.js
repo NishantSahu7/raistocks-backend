@@ -38,6 +38,7 @@ import Client from "../models/clientModel.js";
 // };
 
 export const createClient = async (req, res) => {
+  console.log("Creating client with data:", req.body);
   try {
     const {
       name,
