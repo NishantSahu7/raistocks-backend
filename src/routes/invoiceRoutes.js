@@ -3,6 +3,6 @@ import { getInvoiceById } from "../controllers/invoiceController.js";
 
 const router = express.Router();
 
-router.get("/:id", getInvoiceById);
+router.get("/:clientId", getInvoiceById);
 
 export default router;

@@ -14,7 +14,7 @@ router.route("/")
   .get(getClients)
   .post(createClient);
 
-router.route("/:id")
+router.route("/:clientId")
   .get(getClientById)
   .put(updateClient)
   .delete(deleteClient);

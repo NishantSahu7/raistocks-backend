@@ -97,7 +97,7 @@ export const getClients = async (req, res) => {
 // ✅ Get single client
 export const getClientById = async (req, res) => {
   try {
-    const client = await Client.findById(req.params.id);
+    const client = await Client.findOne({ clientId: req.params.clientId });
     if (!client) return res.status(404).json({ message: "Client not found" });
     res.status(200).json(client);
   } catch (error) {
