@@ -23,7 +23,7 @@ import tradeStrategyRoutes from "./routes/tradeStrategyRoutes.js";
 import planSubscriptionRoutes from "./routes/planSubscriptionRoutes.js";
 import cookieParser from "cookie-parser";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
-import { getDashboardStats } from "./models/dashboardController.js";
+import { getDashboardStats } from "./controllers/dashboardController.js";
 
 connectDB();
 
