@@ -1,5 +1,5 @@
-import cloudinary from "../config/cloudinaryConfig.js";
-import Kyc from "../models/Kyc.js";
+import Kyc from "../models/kycModel.js";
+import cloudinary from "../config/cloudinary.js";
 
 // =============================
 // ✅ CREATE KYC
