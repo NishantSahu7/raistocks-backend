@@ -43,10 +43,12 @@ export const createKyc = async (req, res) => {
 
     // ✅ Upload each file if exists
     if (req.files?.aadhaar_front) {
+        console.log("Uploading aadhaar_front:", req.files.aadhaar_front.name);
       const result = await cloudinary.uploader.upload(
         req.files.aadhaar_front.tempFilePath,
         { folder: "kyc_docs" }
       );
+      console.log("Cloudinary upload result:", result);
       aadhaar_front_url = result.secure_url;
     }
 
