@@ -24,6 +24,8 @@ import planSubscriptionRoutes from "./routes/planSubscriptionRoutes.js";
 import cookieParser from "cookie-parser";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import { getDashboardStats } from "./controllers/dashboardController.js";
+import fileUpload from "express-fileupload";
+import kycRoutes from "./routes/kycRoutes.js";
 
 connectDB();
 
@@ -59,7 +61,12 @@ app.use(cors(corsOptions));
 
 // ✅ Parse JSON bodies (should be before your routes)
 app.use(express.json());
-
+app.use(
+  fileUpload({
+    useTempFiles: true, // saves uploaded files temporarily
+    tempFileDir: "/tmp/",
+  })
+);
 // ✅ Serve static files from uploads directory (for backward compatibility, but images are now on Cloudinary)
 // app.use("/uploads", express.static("uploads"));
 
@@ -86,6 +93,7 @@ app.use("/api/tradesetup", tradeSetupRoutes);
 app.use("/api/trade-strategies", tradeStrategyRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/dashboard", getDashboardStats);
+app.use("/api/kyc", kycRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
