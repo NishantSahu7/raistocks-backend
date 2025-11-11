@@ -208,3 +208,41 @@ export const updateKyc = async (req, res) => {
     });
   }
 };
+// =============================
+// ✅ GET KYC BY PAN NUMBER
+// =============================
+export const getKycByPanNumber = async (req, res) => {
+  try {
+    const { pan_number } = req.params;
+
+    if (!pan_number) {
+      return res.status(400).json({
+        success: false,
+        message: "PAN number is required",
+      });
+    }
+
+    const kyc = await Kyc.findOne({ pan_number });
+
+    if (!kyc) {
+      return res.status(404).json({
+        success: false,
+        message: "KYC not found for the provided PAN number",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "KYC fetched successfully",
+      data: kyc,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching KYC by PAN number:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching KYC by PAN number",
+      error: error.message,
+    });
+  }
+};
+
