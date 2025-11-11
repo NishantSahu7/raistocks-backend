@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
-router.post("/create", createKyc);       // ➕ Add new KYC
-router.get("/all", getAllKycs);          // 📋 Get all KYCs
-router.put("/update/:id", updateKyc);    // ✏️ Update KYC by ID
+router.post("/create", createKyc);       
+router.get("/all", getAllKycs);      
+router.put("/update/:id", updateKyc);    
 
 export default router;

@@ -1,9 +1,6 @@
 import Kyc from "../models/kycModel.js";
 import cloudinary from "../config/cloudinary.js";
 
-// =============================
-// ✅ CREATE KYC
-// =============================
 export const createKyc = async (req, res) => {
   try {
     const {
