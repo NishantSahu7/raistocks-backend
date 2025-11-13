@@ -26,6 +26,8 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import { getDashboardStats } from "./controllers/dashboardController.js";
 import fileUpload from "express-fileupload";
 import kycRoutes from "./routes/kycRoutes.js";
+import "./cronJobs/subscriptionManager.js";
+
 
 connectDB();
 

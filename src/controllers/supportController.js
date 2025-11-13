@@ -1,8 +1,7 @@
 // controllers/supportController.js
 import Support from "../models/supportModel.js";
 import Client from "../models/clientModel.js";
-import { sendResolutionEmail } from "../utils/emailService.js";
-import { sendReplyEmail } from "../utils/emailService.js";
+import { sendResolutionEmail , sendReplyEmail,sendTicketCreationEmail } from "../utils/emailService.js";
 import { response } from "express";
 import User from "../models/userModel.js";
 
@@ -15,36 +14,57 @@ const generateTicketId = async () => {
     : (++ticketCounter).toString();
 };
 
-// ✅ CREATE — New support ticket
+ // ✅ CREATE — New support ticket
 export const createTicket = async (req, res) => {
   try {
     const { client, subject, category, opened, userId } = req.body;
 
+    // 🧩 Validate client
     const clientUser = await Client.findById(userId);
     if (!clientUser) {
       return res.status(404).json({ message: "Client not found" });
     }
 
+    // 🧮 Generate sequential ticket ID
     const newTicketId = await generateTicketId();
 
+    // 📝 Create new ticket in DB
     const newTicket = await Support.create({
       ticketId: newTicketId,
       client: clientUser.name || client,
-    
       subject,
       category,
       opened,
-      status: "Pending", // 👈 Always start as "Pending"
-      userId,// admin id
+      status: "Pending", // Default initial status
+      userId, // Admin or client ID (depends on your logic)
       email: clientUser.email,
     });
 
-    res.status(201).json(newTicket);
+    // 📧 Send confirmation email (non-blocking, won’t stop API if email fails)
+    try {
+      await sendTicketCreationEmail(
+        clientUser.email,
+        clientUser.name || client,
+        subject,
+        newTicketId
+      );
+      console.log("✅ Ticket creation email sent to:", clientUser.email);
+    } catch (emailError) {
+      console.error("❌ Failed to send ticket creation email:", emailError);
+      // Note: We don’t return an error here so ticket still gets created
+    }
+
+    // ✅ Respond to frontend
+    res.status(201).json({
+      message: "Ticket created successfully",
+      ticket: newTicket,
+    });
   } catch (error) {
     console.error("❌ Error creating ticket:", error);
     res.status(500).json({ message: "Server error creating ticket" });
   }
 };
+
 
 // ✅ READ — Get all tickets
 export const getAllTickets = async (req, res) => {
