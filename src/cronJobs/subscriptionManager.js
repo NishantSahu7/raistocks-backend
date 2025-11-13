@@ -6,7 +6,7 @@ import { sendEmail } from "../utils/emailService.js";
 // ⏰ Run daily at midnight.    cron.schedule("0 0 * * *", ...)
                         // run everyminutes. cron.schedule("*/1 * * * *", ...)
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("*/1 * * * *", async () => {
   console.log("🕛 Running daily subscription manager...");
 
   try {
