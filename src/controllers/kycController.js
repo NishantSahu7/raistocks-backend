@@ -210,21 +210,21 @@ export const updateKyc = async (req, res) => {
 // =============================
 export const getKycByPanNumber = async (req, res) => {
   try {
-    const { pan_number } = req.params;
+    const { email } = req.params;
 
-    if (!pan_number) {
+    if (!email) {
       return res.status(400).json({
         success: false,
-        message: "PAN number is required",
+        message: "email is required",
       });
     }
 
-    const kyc = await Kyc.findOne({ pan_number });
+    const kyc = await Kyc.findOne({ email });
 
     if (!kyc) {
       return res.status(404).json({
         success: false,
-        message: "KYC not found for the provided PAN number",
+        message: "KYC not found for the provided email",
       });
     }
 

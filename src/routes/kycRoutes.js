@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/create", createKyc);       
 router.get("/all", getAllKycs);          
-router.put("/update/:id", updateKyc);   
-router.get("/pan/:pan_number", getKycByPanNumber); 
+router.put("/update/:id", updateKyc);    
+router.get("/email/:email", getKycByPanNumber); 
 
 export default router;
