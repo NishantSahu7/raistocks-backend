@@ -1,4 +1,3 @@
-
 // import mongoose from "mongoose";
 
 // const subscriptionSchema = new mongoose.Schema({
@@ -56,7 +55,7 @@ const subscriptionSchema = new mongoose.Schema({
   transactionId: { type: String, default: "" },
   paymentMethod: { type: String, default: "Unknown" },
   status: { type: String, default: "Pending" }, // Pending, Success, Failed, Expired
-  invoiceId: { type: String, default: "" },
+  invoiceId: { type: String, unique: true },
 
   // 🕒 Subscription Tracking
   startDate: { type: Date, default: Date.now }, // when plan activated
@@ -71,7 +70,11 @@ const subscriptionSchema = new mongoose.Schema({
 
 // 🧠 Auto-calculate endDate & remainingDays before saving
 subscriptionSchema.pre("save", function (next) {
-  if (this.isNew || this.isModified("duration") || this.isModified("startDate")) {
+  if (
+    this.isNew ||
+    this.isModified("duration") ||
+    this.isModified("startDate")
+  ) {
     if (!this.startDate) this.startDate = new Date();
 
     // Calculate endDate from startDate + duration days

@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { Subscription } from "../models/subscription.js";
 import Client from "../models/clientModel.js";
 import { generateClientId } from "../utils/generateClientId.js";
+import { generateInvoiceId } from "../utils/generateInvoiceId.js";
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
@@ -41,7 +42,9 @@ export const createSubscriptionOrder = async (req, res) => {
     // Convert duration string to number (dynamic)
     let finalDuration = Number(duration);
     if (!finalDuration || finalDuration <= 0) {
-      console.warn("⚠️ Duration not provided or invalid, using fallback 30 days");
+      console.warn(
+        "⚠️ Duration not provided or invalid, using fallback 30 days"
+      );
       finalDuration = 30;
     }
 
@@ -49,10 +52,16 @@ export const createSubscriptionOrder = async (req, res) => {
     const finalAmount = Number(amount);
     if (!finalAmount || finalAmount <= 0) {
       console.error("❌ Invalid amount:", amount);
-      return res.status(400).json({ success: false, message: "Invalid amount" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid amount" });
     }
 
-    console.log("📦 Finalized Plan:", { finalPlanType, finalDuration, finalAmount });
+    console.log("📦 Finalized Plan:", {
+      finalPlanType,
+      finalDuration,
+      finalAmount,
+    });
 
     // Create Razorpay order
     let order;
@@ -112,13 +121,18 @@ export const createSubscriptionOrder = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   try {
     console.log("🔹 Verifying payment with req.body:", req.body);
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     // Find subscription
-    const subscription = await Subscription.findOne({ razorpayOrderId: razorpay_order_id });
+    const subscription = await Subscription.findOne({
+      razorpayOrderId: razorpay_order_id,
+    });
     if (!subscription) {
       console.error("❌ Subscription not found for order:", razorpay_order_id);
-      return res.status(404).json({ success: false, message: "Subscription not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Subscription not found" });
     }
     console.log("📄 Subscription found:", subscription);
 
@@ -130,14 +144,17 @@ export const verifyPayment = async (req, res) => {
 
     if (generated_signature !== razorpay_signature) {
       console.error("❌ Invalid Razorpay signature");
-      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid payment signature" });
     }
     console.log("✅ Razorpay signature verified");
 
     // Fetch payment details
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
     const paymentMethod = payment?.method || "Test Payment";
-    const paymentStatus = payment?.status === "captured" ? "Success" : "Test Success";
+    const paymentStatus =
+      payment?.status === "captured" ? "Success" : "Test Success";
     console.log("💳 Payment details:", { paymentMethod, paymentStatus });
 
     // Update subscription
@@ -145,6 +162,12 @@ export const verifyPayment = async (req, res) => {
     subscription.razorpaySignature = razorpay_signature;
     subscription.paymentMethod = paymentMethod;
     subscription.paymentStatus = paymentStatus;
+    // Generate invoiceId
+    const invoiceId = await generateInvoiceId();
+    console.log("🧾 Generated Invoice ID:", invoiceId);
+
+    // Add invoiceId to subscription
+    subscription.invoiceId = invoiceId;
     await subscription.save();
     console.log("💾 Subscription updated with payment info");
 
@@ -173,14 +196,15 @@ export const verifyPayment = async (req, res) => {
       existingClient.razorpayPaymentId = razorpay_payment_id;
       existingClient.method = paymentMethod;
       existingClient.status = paymentStatus;
-
+      existingClient.invoiceId = invoiceId;
       await existingClient.save();
       console.log("🔄 Existing client updated:", existingClient);
     } else {
       // New client
-      const clientId = await generateClientId()
+      const clientId = await generateClientId();
       await Client.create({
         clientId,
+        invoiceId,
         name: subscription.name,
         email: subscription.email,
         phone: subscription.phone,
