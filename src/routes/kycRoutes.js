@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/create", createKyc);       // ➕ Add new KYC
 router.get("/all", getAllKycs);          // 📋 Get all KYCs
 router.put("/update/:id", updateKyc);    // ✏️ Update KYC by ID
-router.get("/pan/:pan_number", getKycByPanNumber); // 🔍 Get KYC by PAN number
+router.get("/email/:email", getKycByPanNumber); // 🔍 Get KYC by PAN number
 
 export default router;
