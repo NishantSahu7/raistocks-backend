@@ -66,3 +66,20 @@ export const planExpiryReminderTemplate = (clientName, planName, daysLeft) => `
     <p style="font-style: italic;">– The Support Team</p>
   </div>
 `;
+
+// 🟢 5. KYC Approved Email
+export const kycApprovedTemplate = (clientName) => `
+  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+    <h2 style="color: #4CAF50;">Hello ${clientName || "User"},</h2>
+
+    <p>🎉 Great news! Your <strong>KYC verification</strong> has been 
+    <strong style="color:green;">successfully approved</strong>.</p>
+
+    <p>You now have full access to your account and all premium features.</p>
+
+    <br/>
+    <p>If you have any questions, feel free to reach out to our support team.</p>
+
+    <p style="font-style: italic;">– The Team</p>
+  </div>
+`;

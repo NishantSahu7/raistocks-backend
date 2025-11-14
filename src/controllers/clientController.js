@@ -1,6 +1,6 @@
 // controllers/clientController.js
 import Client from "../models/clientModel.js";
-
+import { sendKycApprovedEmail } from "../utils/emailService.js";
 // ✅ Create new clien
  
 export const createClient = async (req, res) => {
@@ -99,15 +99,17 @@ export const deleteClient = async (req, res) => {
 // controllers/clientController.js
 
 // 🔄 Update only KYC status
+
 export const updateKycStatus = async (req, res) => {
   try {
     const { clientId } = req.params;
-    const { kyc } = req.body; // expected: "Verified" or "Pending"
+    const { kyc } = req.body; // "Approved"   
 
     if (!kyc) {
       return res.status(400).json({ message: "KYC status is required" });
     }
 
+    // 🔄 Update KYC
     const client = await Client.findOneAndUpdate(
       { clientId },
       { kyc },
@@ -118,6 +120,12 @@ export const updateKycStatus = async (req, res) => {
       return res.status(404).json({ message: "Client not found" });
     }
 
+    // 📩 If KYC Approved, send email
+    if (kyc === "Approved") {
+      await sendKycApprovedEmail(client.email, client.name);
+      console.log("KYC approval email sent!");
+    }
+
     res.status(200).json({
       message: "KYC status updated successfully",
       client,
@@ -126,3 +134,4 @@ export const updateKycStatus = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
