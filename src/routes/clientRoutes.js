@@ -6,6 +6,7 @@ import {
   getClientById,
   updateClient,
   deleteClient,
+  updateKycStatus
 } from "../controllers/clientController.js";
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.route("/:clientId")
   .get(getClientById)
   .put(updateClient)
   .delete(deleteClient);
+  
+  router.put("/:clientId/kyc", updateKycStatus);
 
 export default router;

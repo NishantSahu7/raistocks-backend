@@ -95,3 +95,34 @@ export const deleteClient = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// controllers/clientController.js
+
+// 🔄 Update only KYC status
+export const updateKycStatus = async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const { kyc } = req.body; // expected: "Verified" or "Pending"
+
+    if (!kyc) {
+      return res.status(400).json({ message: "KYC status is required" });
+    }
+
+    const client = await Client.findOneAndUpdate(
+      { clientId },
+      { kyc },
+      { new: true }
+    );
+
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    res.status(200).json({
+      message: "KYC status updated successfully",
+      client,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
