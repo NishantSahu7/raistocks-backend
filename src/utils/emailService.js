@@ -4,7 +4,8 @@ import {
   ticketReplyTemplate,
   ticketCreationTemplate,
   planExpiryReminderTemplate,
-  kycApprovedTemplate
+  kycApprovedTemplate,
+  loginOtpTemplate,
 } from "./emailTemplates.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -54,5 +55,13 @@ export const sendEmail = async (to, subject, html) => {
 export const sendKycApprovedEmail = async (to, clientName) => {
   const html = kycApprovedTemplate(clientName);
   await sendEmail(to, `Your KYC Has Been Approved 🎉`, html);
+};
+
+// 🟢 Send Login OTP Email
+
+export const sendLoginOtpEmail = async (email, name, otp) => {
+  const html = loginOtpTemplate(name, otp);
+
+  await sendEmail(email, "Your Login OTP", html);
 };
 

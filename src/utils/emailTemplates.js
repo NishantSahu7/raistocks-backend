@@ -83,3 +83,19 @@ export const kycApprovedTemplate = (clientName) => `
     <p style="font-style: italic;">– The Team</p>
   </div>
 `;
+export const loginOtpTemplate = (name, otp) => {
+  return `
+    <div style="font-family: Arial; padding: 20px;">
+      <h2>Login OTP</h2>
+      <p>Hello ${name || "User"},</p>
+      <p>Your OTP for login is:</p>
+
+      <h1 style="background: #f1f1f1; padding: 10px; display: inline-block;">
+        ${otp}
+      </h1>
+
+      <p>This OTP is valid for 10 minutes.</p>
+      <p>Regards,<br>Support Team</p>
+    </div>
+  `;
+};

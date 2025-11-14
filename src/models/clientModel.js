@@ -29,6 +29,10 @@ const clientSchema = new mongoose.Schema(
 
     // Notifications
     notifications: [{ type: String }],
+
+      //  OTP LOGIN FIELDS 
+    otp: { type: String, default: "" },
+    otpExpiry: { type: Date },
   },
   { timestamps: true }
 );

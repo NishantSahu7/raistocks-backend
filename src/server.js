@@ -47,6 +47,7 @@ const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
   "http://localhost:5176",
+  "https://hc8lbxls-5000.inc1.devtunnels.ms",
 ];
 
 const corsOptions = {
