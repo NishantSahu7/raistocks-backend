@@ -49,7 +49,6 @@ export const sendEmail = async (to, subject, html) => {
 };
 
 
-import { kycApprovedTemplate } from "./emailTemplates.js";
 
 // 🟢 Send KYC Approved Email
 export const sendKycApprovedEmail = async (to, clientName) => {
