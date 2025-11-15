@@ -225,11 +225,19 @@ app.use("/api/kyc", kycRoutes);
 // ------------ HTTP + SOCKET.IO SETUP ------------
 const server = http.createServer(app);
 
-export const io = new Server(server, {
+ export const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://your-railway-domain.up.railway.app",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
+
 
 // Store connected clients
 global.onlineUsers = new Map();
