@@ -243,3 +243,43 @@ export const getKycByPanNumber = async (req, res) => {
   }
 };
 
+// =============================
+// ✅ UPLOAD AGREEMENT DOCUMENT FOR EXISTING KYC
+// =============================
+export const uploadAgreement = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find existing KYC
+    const existingKyc = await Kyc.findById(id);
+    if (!existingKyc) {
+      return res.status(404).json({ success: false, message: "KYC not found" });
+    }
+
+    if (!req.files?.agreement) {
+      return res.status(400).json({ success: false, message: "Agreement file is required" });
+    }
+
+    // Upload agreement to Cloudinary
+    const result = await cloudinary.uploader.upload(req.files.agreement.tempFilePath, {
+      folder: "kyc_docs",
+    });
+
+    // Update KYC with agreement URL
+    existingKyc.agreement_url = result.secure_url;
+    await existingKyc.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Agreement uploaded successfully",
+      data: existingKyc,
+    });
+  } catch (error) {
+    console.error("❌ Error uploading agreement:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while uploading agreement",
+      error: error.message,
+    });
+  }
+};

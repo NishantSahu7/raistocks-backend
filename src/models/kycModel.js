@@ -31,6 +31,7 @@ const kycSchema = new mongoose.Schema({
   pan_image_url: String,
   your_photo_url: String,
   your_signature_url: String,
+  agreement_url: String,
 
   full_terms_and_conditions: Boolean,
   aadhaar_pan_consent: Boolean,
