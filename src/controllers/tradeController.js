@@ -134,26 +134,31 @@
 
 import Trade from "../models/tradeModel.js";
 import { sendNotificationToAll } from "../server.js";
+import Notification from "../models/notification.js";
+
+
+const createNotification = async ({ title, message, type, userId = null, tradeId = null }) => {
+  // Save in DB
+  await Notification.create({ title, message, type, userId });
+
+  // Emit via Socket.io for online users
+  sendNotificationToAll({ title, message, type, tradeId });
+};
 
 /* ===========================================================
    CREATE TRADE  (Broadcast Notification)
 =========================================================== */
 export const createTrade = async (req, res) => {
   try {
-     console.log("👉 CREATE TRADE API HIT");
-    console.log("📥 Request Body:", req.body);
 
     const trade = await Trade.create(req.body);
-console.log("✅ Trade Saved:", trade);
-console.log("📡 Sending WS Notification...");
     // 🔔 Broadcast notification to all clients
-    sendNotificationToAll({
-      title: "New Trade Created",
-      message: `A new trade (${trade.title || trade.segment}) has been added.`,
-      tradeId: trade._id,
-      type: "trade_created",
-    });
-console.log("📡 WS Notification Sent!");
+    await createNotification({
+  title: "New Trade Created",
+  message: `A new trade (${trade.title || trade.segment}) has been added.`,
+  type: "trade_created",
+  tradeId: trade._id,
+});
     res.status(201).json({
       success: true,
       message: "Trade added successfully",
@@ -224,7 +229,7 @@ export const updateTrade = async (req, res) => {
       return res.status(404).json({ success: false, message: "Trade not found" });
 
     // 🔔 Notify all clients
-    sendNotificationToAll({
+    createNotification({
       title: "Trade Updated",
       message: `Trade ${trade.title || trade.segment} was updated.`,
       tradeId: trade._id,
@@ -260,7 +265,7 @@ export const updateTradeStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "Trade not found" });
 
     // 🔔 Notify all clients
-    sendNotificationToAll({
+    createNotification({
       title: "Trade Status Updated",
       message: `Trade "${trade.title}" status changed to ${status}.`,
       tradeId: trade._id,
@@ -290,7 +295,7 @@ export const deleteTrade = async (req, res) => {
       return res.status(404).json({ success: false, message: "Trade not found" });
 
     // 🔔 Notify all clients
-    sendNotificationToAll({
+    createNotification({
       title: "Trade Deleted",
       message: `Trade "${trade.title}" has been deleted.`,
       tradeId: trade._id,
@@ -325,7 +330,7 @@ export const updateTrailSl = async (req, res) => {
       return res.status(404).json({ success: false, message: "Trade not found" });
 
     // 🔔 Notify all clients
-    sendNotificationToAll({
+    createNotification({
       title: "Trail SL Updated",
       message: `Trail SL for trade "${trade.title}" updated to ${trailSl}.`,
       tradeId: trade._id,

@@ -158,7 +158,7 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import kycRoutes from "./routes/kycRoutes.js";
 import { getDashboardStats } from "./controllers/dashboardController.js";
 import "./cronJobs/subscriptionManager.js";
-
+import notificationRoutes from "./routes/notificationRoutes.js";
 // -------------------------------------------------
 connectDB();
 const app = express();
@@ -221,7 +221,7 @@ app.use("/api/trade-strategies", tradeStrategyRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/dashboard", getDashboardStats);
 app.use("/api/kyc", kycRoutes);
-
+app.use("/api/notifications", notificationRoutes);
 // ------------ HTTP + SOCKET.IO SETUP ------------
 const server = http.createServer(app);
 
@@ -255,11 +255,11 @@ io.on("connection", (socket) => {
   });
 });
 
-// 🔥 Send notification to a specific user
-export const sendNotification = (userId, message) => {
-  const socketId = onlineUsers.get(userId);
-  if (socketId) io.to(socketId).emit("notification", message);
-};
+// // 🔥 Send notification to a specific user
+// export const sendNotification = (userId, message) => {
+//   const socketId = onlineUsers.get(userId);
+//   if (socketId) io.to(socketId).emit("notification", message);
+// };
 
 // 🔥 Send notification to ALL clients
 export const sendNotificationToAll = (message) => {
