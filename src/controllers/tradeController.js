@@ -140,8 +140,12 @@ import { sendNotificationToAll } from "../server.js";
 =========================================================== */
 export const createTrade = async (req, res) => {
   try {
-    const trade = await Trade.create(req.body);
+     console.log("👉 CREATE TRADE API HIT");
+    console.log("📥 Request Body:", req.body);
 
+    const trade = await Trade.create(req.body);
+console.log("✅ Trade Saved:", trade);
+console.log("📡 Sending WS Notification...");
     // 🔔 Broadcast notification to all clients
     sendNotificationToAll({
       title: "New Trade Created",
@@ -149,7 +153,7 @@ export const createTrade = async (req, res) => {
       tradeId: trade._id,
       type: "trade_created",
     });
-
+console.log("📡 WS Notification Sent!");
     res.status(201).json({
       success: true,
       message: "Trade added successfully",
