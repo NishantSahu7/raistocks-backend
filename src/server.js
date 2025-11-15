@@ -159,6 +159,7 @@ import kycRoutes from "./routes/kycRoutes.js";
 import { getDashboardStats } from "./controllers/dashboardController.js";
 import "./cronJobs/subscriptionManager.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import coupanRoutes from "./routes/couponRoutes.js";
 // -------------------------------------------------
 connectDB();
 const app = express();
@@ -222,6 +223,7 @@ app.use("/api/invoice", invoiceRoutes);
 app.use("/api/dashboard", getDashboardStats);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/coupons", coupanRoutes);
 // ------------ HTTP + SOCKET.IO SETUP ------------
 const server = http.createServer(app);
 
