@@ -192,14 +192,15 @@ app.use(
 );
 
 // ------------ MIDDLEWARES --------------
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
   })
 );
+app.use(express.json());
+app.use(cookieParser());
+
 
 // ------------ REGISTER ROUTES ----------
 app.use("/api/users", userRoutes);

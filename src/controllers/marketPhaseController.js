@@ -28,7 +28,7 @@ export const createMarketPhase = async (req, res) => {
     });
    await createNotification({
   title: "New MarketPhase Created",
-  message: `A new MarketInsight (${req.title}) has been added.`,
+  message: `A new MarketPhase (${req.title}) has been added.`,
   type: "trade_created",
   // tradeId: trade._id,
 });

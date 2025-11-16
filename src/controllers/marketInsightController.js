@@ -15,10 +15,10 @@ const createNotification = async ({ title, message, type, userId = null, tradeId
 export const createMarketInsight = async (req, res) => {
   try {
     const marketInsight = await MarketInsight.create(req.body);
-    
+
     await createNotification({
   title: "New MarketInsight Created",
-  message: `A new trade (${req.title}) has been added.`,
+  message: `A new MarketInsight (${req.marketInfo}) has been added.`,
   type: "MarketInsight_created",
   // tradeId: trade._id,
 });
