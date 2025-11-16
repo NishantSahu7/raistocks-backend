@@ -165,31 +165,39 @@ connectDB();
 const app = express();
 
 // ---------- CORS SETUP ----------
-const whitelist = [
-  "https://fantastic-kelpie-7dc39f.netlify.app",
-  "https://unique-youtiao-11d4e5.netlify.app",
-  "https://classy-begonia-022eef.netlify.app",
-  "https://sensational-maamoul-174c61.netlify.app",
-  "https://chipper-rugelach-27e08f.netlify.app",
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://localhost:5174",
-  "http://localhost:5175",
-  "http://localhost:5176",
-  "https://www.dashboard.raistocks.com",
-  "https://www.crm.raistocks.com"
-];
+// const whitelist = [
+//   "https://fantastic-kelpie-7dc39f.netlify.app",
+//   "https://unique-youtiao-11d4e5.netlify.app",
+//   "https://classy-begonia-022eef.netlify.app",
+//   "https://sensational-maamoul-174c61.netlify.app",
+//   "https://chipper-rugelach-27e08f.netlify.app",
+//   "http://localhost:5173",
+//   "http://localhost:3000",
+//   "http://localhost:5174",
+//   "http://localhost:5175",
+//   "http://localhost:5176",
+//   "https://www.dashboard.raistocks.com",
+//   "https://www.crm.raistocks.com"
+// ];
 
-app.use(
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin || whitelist.includes(origin)) callback(null, true);
+//       else callback(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+//   })
+// );
+ app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || whitelist.includes(origin)) callback(null, true);
-      else callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   })
 );
+
 
 // ------------ MIDDLEWARES --------------
 app.use(
@@ -230,21 +238,27 @@ app.use("/api/coupons", coupanRoutes);
 // ------------ HTTP + SOCKET.IO SETUP ------------
 const server = http.createServer(app);
 
- export const io = new Server(server, {
+//  export const io = new Server(server, {
+//   cors: {
+//     origin: [
+//       "http://localhost:5173",
+//       "http://localhost:5174",
+//       "http://localhost:5175",
+//       "https://your-railway-domain.up.railway.app",
+//       "https://www.dashboard.raistocks.com",
+//       "https://www.crm.raistocks.com"
+//     ],
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
+export const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:5175",
-      "https://your-railway-domain.up.railway.app",
-      "https://www.dashboard.raistocks.com",
-      "https://www.crm.raistocks.com"
-    ],
+    origin: true,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-
 
 // Store connected clients
 global.onlineUsers = new Map();
