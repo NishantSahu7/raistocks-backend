@@ -264,13 +264,13 @@ export const updateTradeStatus = async (req, res) => {
     if (!trade)
       return res.status(404).json({ success: false, message: "Trade not found" });
 
-    // 🔔 Notify all clients
-    createNotification({
-      title: "Trade Status Updated",
-      message: `Trade "${trade.title}" status changed to ${status}.`,
-      tradeId: trade._id,
-      type: "trade_status",
-    });
+    // // 🔔 Notify all clients
+    // createNotification({
+    //   title: "Trade Status Updated",
+    //   message: `Trade "${trade.title}" status changed to ${status}.`,
+    //   tradeId: trade._id,
+    //   type: "trade_status",
+    // });
 
     res.status(200).json({
       success: true,
@@ -294,13 +294,13 @@ export const deleteTrade = async (req, res) => {
     if (!trade)
       return res.status(404).json({ success: false, message: "Trade not found" });
 
-    // 🔔 Notify all clients
-    createNotification({
-      title: "Trade Deleted",
-      message: `Trade "${trade.title}" has been deleted.`,
-      tradeId: trade._id,
-      type: "trade_deleted",
-    });
+    // // 🔔 Notify all clients
+    // createNotification({
+    //   title: "Trade Deleted",
+    //   message: `Trade "${trade.title}" has been deleted.`,
+    //   tradeId: trade._id,
+    //   type: "trade_deleted",
+    // });
 
     res.status(200).json({
       success: true,
@@ -330,12 +330,12 @@ export const updateTrailSl = async (req, res) => {
       return res.status(404).json({ success: false, message: "Trade not found" });
 
     // 🔔 Notify all clients
-    createNotification({
-      title: "Trail SL Updated",
-      message: `Trail SL for trade "${trade.title}" updated to ${trailSl}.`,
-      tradeId: trade._id,
-      type: "trail_sl_updated",
-    });
+    // createNotification({
+    //   title: "Trail SL Updated",
+    //   message: `Trail SL for trade "${trade.title}" updated to ${trailSl}.`,
+    //   tradeId: trade._id,
+    //   type: "trail_sl_updated",
+    // });
 
     res.status(200).json({
       success: true,

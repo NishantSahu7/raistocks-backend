@@ -1,4 +1,11 @@
 import MarketSetup from "../models/marketsetupModel.js";
+const createNotification = async ({ title, message, type, userId = null, tradeId = null }) => {
+  // Save in DB
+  await Notification.create({ title, message, type, userId });
+
+  // Emit via Socket.io for online users
+  sendNotificationToAll({ title, message, type, tradeId });
+};
 
 // Create Market Setup
 export const createMarketSetup = async (req, res) => {
@@ -69,6 +76,12 @@ export const createMarketSetup = async (req, res) => {
     });
 
     const savedSetup = await marketSetup.save();
+    await createNotification({
+  title: "New MarketSetup Created",
+  message: `A new MarketSetup for ${on} has been added.`,
+  type: "MarketSetup_created",
+  // tradeId: trade._id,
+});
     res.status(201).json(savedSetup);
   } catch (err) {
     console.error("Error creating market setup:", err);

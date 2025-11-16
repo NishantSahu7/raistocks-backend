@@ -1,9 +1,27 @@
 import MarketInsight from "../models/marketInsightModel.js";
+import { sendNotificationToAll } from "../server.js";
+import Notification from "../models/notification.js";
+
+
+const createNotification = async ({ title, message, type, userId = null, tradeId = null }) => {
+  // Save in DB
+  await Notification.create({ title, message, type, userId });
+
+  // Emit via Socket.io for online users
+  sendNotificationToAll({ title, message, type, tradeId });
+};
 
 // Create a new Market Insight
 export const createMarketInsight = async (req, res) => {
   try {
     const marketInsight = await MarketInsight.create(req.body);
+    
+    await createNotification({
+  title: "New MarketInsight Created",
+  message: `A new trade (${req.title}) has been added.`,
+  type: "MarketInsight_created",
+  // tradeId: trade._id,
+});
     res.status(201).json({ success: true, data: marketInsight });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
