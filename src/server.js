@@ -177,6 +177,7 @@ const whitelist = [
   "http://localhost:5175",
   "http://localhost:5176",
   "https://www.dashboard.raistocks.com",
+  "https://www.crm.raistocks.com"
 ];
 
 app.use(
@@ -235,7 +236,8 @@ const server = http.createServer(app);
       "http://localhost:5174",
       "http://localhost:5175",
       "https://your-railway-domain.up.railway.app",
-      "https://www.dashboard.raistocks.com"
+      "https://www.dashboard.raistocks.com",
+      "https://www.crm.raistocks.com"
     ],
     methods: ["GET", "POST"],
     credentials: true,
